@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { Link } from "wouter";
-import { Compass, Users, UserCheck, ChevronDown, Check, ArrowRight } from "lucide-react";
+import { Compass, Users, UserCheck, Check, ArrowRight } from "lucide-react";
+import PricingSection from "@/components/PricingSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -134,6 +134,8 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      <PricingSection />
 
       <section className="py-16 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
