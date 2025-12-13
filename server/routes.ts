@@ -27,10 +27,13 @@ export async function registerRoutes(
   let razorpay: Razorpay | null = null;
 
   if (keyId && keySecret) {
+    console.log("Razorpay initialized with key:", keyId.substring(0, 8) + "...");
     razorpay = new Razorpay({
       key_id: keyId,
       key_secret: keySecret,
     });
+  } else {
+    console.log("Razorpay not initialized - missing credentials. KEY_ID:", !!keyId, "KEY_SECRET:", !!keySecret);
   }
 
   app.post("/api/create-order", async (req, res) => {

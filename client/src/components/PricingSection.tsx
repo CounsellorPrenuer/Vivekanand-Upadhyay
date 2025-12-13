@@ -294,7 +294,12 @@ export default function PricingSection() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create order");
+        const errorData = await response.json().catch(() => ({}));
+        if (response.status === 503) {
+          alert("Online payments are temporarily unavailable. Please contact us at +91 7030502200 to book your session.");
+          return;
+        }
+        throw new Error(errorData.error || "Failed to create order");
       }
 
       const order = await response.json();
