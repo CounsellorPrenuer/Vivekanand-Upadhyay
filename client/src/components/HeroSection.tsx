@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowRight, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import profileImage from "@assets/VU_-_Vivekanand_Upadhyay_1765615317685.JPG";
+import profileImage from "@assets/vu-profile.jpg";
 
 const taglines = [
   "Ex Army Physician",
