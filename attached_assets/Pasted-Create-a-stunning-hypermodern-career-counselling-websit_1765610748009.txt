@@ -1,0 +1,179 @@
+Create a stunning, hypermodern career counselling website for Vivekanand Upadhyay with the following specifications:
+
+## CORE REQUIREMENTS:
+
+### Design & UI/UX:
+- Create a visually stunning, award-worthy UI with smooth animations throughout
+- Implement vibrant gradients (blues, purples, teals) with glassmorphism effects
+- Add smooth page transitions, scroll animations, and micro-interactions
+- Custom cursor animation with hover effects that change based on interactive elements
+- Parallax scrolling effects on hero sections
+- Animated gradient backgrounds that shift subtly
+- Floating card designs with depth and shadows
+- Smooth reveal animations as elements enter viewport
+- Animated statistics counters and progress indicators
+
+### Theme System:
+- Implement comprehensive light/dark mode toggle with smooth transition
+- Store theme preference in localStorage
+- Light theme: Clean whites, soft shadows, vibrant accent colors
+- Dark theme: Deep navy/charcoal backgrounds, neon accents, glowing effects
+- Theme-aware gradients that adapt to both modes
+- Animated theme switcher icon (sun/moon with rotation)
+
+### Custom Cursor:
+- Replace default cursor with custom animated cursor
+- Cursor expands on hover over clickable elements
+- Trail effect following cursor movement
+- Different cursor states: default, hover, click
+- Smooth easing animations
+
+## PAGES & SECTIONS:
+
+### 1. HOME PAGE:
+- **Hero Section**: 
+  - Full-screen animated gradient background
+  - Floating profile image with glow effect
+  - Animated typewriter effect for tagline: "Ex Army Physician | Career Counsellor | Guiding Your Journey to Fulfillment"
+  - Animated CTA buttons with hover effects
+  - Particle effect or animated shapes in background
+
+- **About Me Section**:
+  - Split layout with animated entry
+  - Highlight: "Ex Army Physician with extensive experience working with school-going children and professionals facing career changes"
+  - Key traits: Empathy, Deep Understanding, Career Expertise
+  - Timeline animation showing career journey
+
+- **Services Section**:
+  - Animated service cards with icons
+  - Services: Career Guidance, Workshops & Seminars, One-on-One Counselling
+  - Target audience tags: Students, Parents, Schools, Colleges, Corporates, Working Professionals, NGOs
+  - Hover effects revealing more details
+
+- **Why Choose Me**:
+  - Animated statistics: Years of Experience, Students Helped, Success Rate
+  - Mission statement: "Early choice of appropriate career can define one's level of success and happiness"
+  - Animated quotes carousel
+
+- **Testimonials**:
+  - Carousel with smooth transitions
+  - Placeholder for future testimonials
+  - Animated quote marks and star ratings
+
+- **CTA Section**:
+  - Eye-catching gradient background
+  - Book consultation button with pulse animation
+  - Contact details with icons
+
+### 2. SERVICES PAGE:
+- Detailed service descriptions with animated icons
+- Pricing tables (if applicable)
+- Service process timeline
+- Interactive FAQ accordion
+
+### 3. BLOG/ARTICLES PAGE:
+- Grid layout with hover effects
+- Category filters with smooth transitions
+- Search functionality
+- Placeholder for future content
+
+### 4. CONTACT PAGE:
+- Animated contact form with validation
+- Form fields with floating labels
+- Contact info: vivekupadhyay2005@gmail.com, 7030502200
+- Embedded Google Maps (if location available)
+- Social media links (Instagram emphasized)
+- Success animation on form submission
+
+### 5. ADMIN DASHBOARD:
+**Protected with login:**
+- Modern dashboard UI with charts and analytics
+- Sections:
+  - **Overview**: Visitor stats, consultation requests, testimonials pending
+  - **Consultations**: Manage bookings, calendar view
+  - **Blog Management**: Create, edit, delete articles with rich text editor
+  - **Testimonials**: Approve/reject/manage testimonials
+  - **Content Management**: Edit About Me, Services, Homepage content
+  - **Messages**: View and respond to contact form submissions
+  - **Settings**: Site configuration, theme customization
+- Sidebar navigation with icons
+- Real-time notifications
+- Mobile-responsive admin panel
+
+## TECHNICAL FEATURES:
+
+### Animations Library:
+- Use Framer Motion or GSAP for advanced animations
+- Intersection Observer for scroll-triggered animations
+- CSS animations for micro-interactions
+
+### Tech Stack Suggestions:
+- **Frontend**: React/Next.js with TypeScript
+- **Styling**: Tailwind CSS with custom theme
+- **Animations**: Framer Motion
+- **Icons**: Lucide React or React Icons
+- **Forms**: React Hook Form with validation
+- **Admin Auth**: Simple JWT-based auth
+- **Database**: Firebase/Supabase for admin data (or JSON files for demo)
+
+### Custom Cursor Implementation:
+```javascript
+- Track mouse position with useEffect
+- Render custom cursor div that follows mouse
+- Scale up on hover over interactive elements
+- Add blur/glow effects
+```
+
+### Performance:
+- Lazy loading for images
+- Code splitting
+- Optimized animations (use transform and opacity)
+- Responsive images
+
+## UNIQUE THEME COLORS:
+
+### Light Mode:
+- Primary: #2563eb (Royal Blue)
+- Secondary: #7c3aed (Purple)
+- Accent: #0891b2 (Teal)
+- Background: #ffffff
+- Text: #1e293b
+
+### Dark Mode:
+- Primary: #3b82f6 (Bright Blue)
+- Secondary: #a855f7 (Bright Purple)
+- Accent: #06b6d4 (Cyan)
+- Background: #0f172a (Dark Navy)
+- Surface: #1e293b
+- Text: #f1f5f9
+
+### Gradients:
+- Hero: from-blue-600 via-purple-600 to-teal-500
+- Cards: from-blue-500/20 to-purple-500/20
+- Buttons: Animated gradient on hover
+
+## MOBILE RESPONSIVENESS:
+- Hamburger menu with smooth slide-in animation
+- Touch-optimized interactions
+- Stacked layouts for mobile
+- Bottom navigation for key actions
+- Swipeable testimonials carousel
+
+## ADDITIONAL FEATURES:
+- Smooth scroll behavior
+- Loading screen with animated logo
+- 404 page with creative design
+- Cookie consent banner
+- WhatsApp chat integration (7030502200)
+- Instagram feed integration
+- SEO optimized meta tags
+- Accessibility features (ARIA labels, keyboard navigation)
+
+## FOOTER:
+- Multi-column layout
+- Quick links, Services, Contact info
+- Social media icons with hover animations
+- Copyright: © 2024 Vivekanand Upadhyay - Career Counsellor
+- Animated wave or geometric separator
+
+Create this as a fully functional, production-ready website with clean, modular code. Make it absolutely stunning with attention to every detail. The goal is to create a website that makes visitors say "WOW!" while maintaining excellent usability.
