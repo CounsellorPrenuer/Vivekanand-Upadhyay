@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 // todo: remove mock functionality - replace with real blog posts from database
 const categories = ["All", "Career Tips", "Student Guidance", "Industry Insights", "Success Stories"];
@@ -68,6 +69,38 @@ const blogPosts = [
 export default function Blog() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const { toast } = useToast();
+
+  const handleReadArticle = (postId: number) => {
+    toast({
+      title: "Coming Soon!",
+      description: "Full articles will be available soon. Stay tuned!",
+    });
+  };
+
+  const handleLoadMore = () => {
+    toast({
+      title: "All Caught Up!",
+      description: "You've seen all available articles. Check back later for more!",
+    });
+  };
+
+  const handleNewsletterSubscribe = () => {
+    if (!newsletterEmail || !newsletterEmail.includes("@")) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: "Subscribed!",
+      description: "Thank you for subscribing to our newsletter.",
+    });
+    setNewsletterEmail("");
+  };
 
   const filteredPosts = blogPosts.filter((post) => {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -164,6 +197,7 @@ export default function Blog() {
                         variant="ghost"
                         size="sm"
                         className="gap-1 p-0 h-auto"
+                        onClick={() => handleReadArticle(post.id)}
                         data-testid={`button-read-${post.id}`}
                       >
                         Read <ArrowRight className="w-3 h-3" />
@@ -176,7 +210,7 @@ export default function Blog() {
           )}
 
           <div className="flex justify-center mt-12">
-            <Button variant="outline" data-testid="button-load-more">
+            <Button variant="outline" onClick={handleLoadMore} data-testid="button-load-more">
               Load More Articles
             </Button>
           </div>
@@ -194,10 +228,13 @@ export default function Blog() {
               type="email"
               placeholder="Enter your email"
               className="flex-1"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
               data-testid="input-newsletter-email"
             />
             <Button
               className="bg-gradient-to-r from-blue-600 via-purple-600 to-teal-500 text-white"
+              onClick={handleNewsletterSubscribe}
               data-testid="button-newsletter-subscribe"
             >
               Subscribe
