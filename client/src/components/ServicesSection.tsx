@@ -1,6 +1,8 @@
-import { Compass, Users, UserCheck, GraduationCap, Building2, Briefcase, Heart } from "lucide-react";
+import { Compass, Users, UserCheck, GraduationCap, Building2, Briefcase, Heart, ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const services = [
   {
@@ -62,13 +64,18 @@ export default function ServicesSection() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-4 text-sm leading-relaxed">{service.description}</p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-4">
                   {service.audiences.map((audience) => (
                     <Badge key={audience} variant="secondary" className="text-xs">
                       {audience}
                     </Badge>
                   ))}
                 </div>
+                <Link href="/services">
+                  <Button variant="ghost" className="gap-1 p-0 h-auto" data-testid={`button-learn-more-${index}`}>
+                    Learn More <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}
