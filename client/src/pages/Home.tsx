@@ -5,6 +5,7 @@ import PricingSection from "@/components/PricingSection";
 import StatsSection from "@/components/StatsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import CTASection from "@/components/CTASection";
+import MentoriaSection from "@/components/MentoriaSection";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <StatsSection />
       <TestimonialsSection />
       <CTASection />
+      <MentoriaSection />
     </main>
   );
 }
