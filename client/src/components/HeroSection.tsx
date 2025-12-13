@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowRight, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import profileImage from "@assets/VU_-_Vivekanand_Upadhyay_1765615317685.JPG";
 
 const taglines = [
   "Ex Army Physician",
@@ -54,8 +55,8 @@ export default function HeroSection() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="flex flex-col items-center">
-          <div className="text-center max-w-3xl">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6 animate-fade-in-up">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               Available for Consultations
@@ -76,13 +77,13 @@ export default function HeroSection() {
               </p>
             </div>
 
-            <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+            <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
               With years of experience as an Army Physician and career counsellor, 
               I help students, professionals, and organizations discover their true potential 
               and make informed career decisions.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
               <Link href="/contact">
                 <Button
                   size="lg"
@@ -104,6 +105,23 @@ export default function HeroSection() {
                   <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
+            </div>
+          </div>
+
+          <div className="flex-shrink-0 animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 rounded-full blur-2xl opacity-50 animate-pulse-glow" />
+              <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl animate-float">
+                <img
+                  src={profileImage}
+                  alt="Vivekanand Upadhyay - Career Counsellor"
+                  className="w-full h-full object-cover"
+                  data-testid="img-hero-profile"
+                />
+              </div>
+              <div className="absolute -bottom-4 -right-4 bg-card border border-border rounded-lg px-4 py-2 shadow-lg animate-fade-in-up" style={{ animationDelay: "0.8s" }}>
+                <p className="text-sm font-medium">15+ Years Experience</p>
+              </div>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { Link } from "wouter";
-import { Compass, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import { SiInstagram, SiLinkedin, SiFacebook, SiX } from "react-icons/si";
+import logoImage from "@assets/11_-_Vivekanand_Upadhyay_1765615274650.jpg";
 
 const quickLinks = [
   { label: "Home", href: "/" },
@@ -30,9 +31,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 flex items-center justify-center">
-                <Compass className="w-6 h-6 text-white" />
-              </div>
+              <img src={logoImage} alt="Career Counsellor Logo" className="w-10 h-10 rounded-full object-cover" />
               <span className="font-semibold text-lg">Vivekanand Upadhyay</span>
             </div>
             <p className="text-muted-foreground text-sm mb-4">

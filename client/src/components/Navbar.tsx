@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Compass } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "./ThemeToggle";
+import logoImage from "@assets/11_-_Vivekanand_Upadhyay_1765615274650.jpg";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -21,9 +22,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 gap-4">
           <Link href="/" data-testid="link-logo">
             <div className="flex items-center gap-2 cursor-pointer">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 flex items-center justify-center">
-                <Compass className="w-6 h-6 text-white" />
-              </div>
+              <img src={logoImage} alt="Career Counsellor Logo" className="w-10 h-10 rounded-full object-cover" />
               <span className="font-semibold text-lg hidden sm:block">Vivekanand Upadhyay</span>
             </div>
           </Link>
