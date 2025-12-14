@@ -13,6 +13,7 @@ import Home from "@/pages/Home";
 import Services from "@/pages/Services";
 import Blog from "@/pages/Blog";
 import Contact from "@/pages/Contact";
+import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
 function ScrollToTop() {
@@ -32,8 +33,25 @@ function Router() {
       <Route path="/services" component={Services} />
       <Route path="/blog" component={Blog} />
       <Route path="/contact" component={Contact} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
+  );
+}
+
+function Layout({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
+  const isAdminPage = location === "/admin";
+  
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <ScrollToTop />
+      <CustomCursor />
+      {!isAdminPage && <Navbar />}
+      {children}
+      {!isAdminPage && <Footer />}
+      {!isAdminPage && <FloatingWhatsApp />}
+    </div>
   );
 }
 
@@ -42,14 +60,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <div className="min-h-screen bg-background text-foreground">
-            <ScrollToTop />
-            <CustomCursor />
-            <Navbar />
+          <Layout>
             <Router />
-            <Footer />
-            <FloatingWhatsApp />
-          </div>
+          </Layout>
           <Toaster />
         </TooltipProvider>
       </ThemeProvider>
