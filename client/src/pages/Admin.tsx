@@ -235,7 +235,9 @@ function ButtonInventory({ buttons }: { buttons: SiteButton[] }) {
                       {btn.label}
                       <Badge variant="outline">{btn.page}</Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">{btn.description}</p>
+                    {btn.description && (
+                      <p className="text-sm text-muted-foreground mt-1">{btn.description}</p>
+                    )}
                   </div>
                   <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 </div>
