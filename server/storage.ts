@@ -2,7 +2,9 @@ import {
   type User, type InsertUser, type Order, type InsertOrder,
   type ButtonClick, type InsertButtonClick,
   type NewsletterSubscriber, type InsertNewsletterSubscriber,
-  type SiteButton, type InsertSiteButton
+  type SiteButton, type InsertSiteButton,
+  type Review, type InsertReview,
+  type BlogPost, type InsertBlogPost
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -21,6 +23,14 @@ export interface IStorage {
   getNewsletterSubscribers(): Promise<NewsletterSubscriber[]>;
   getSiteButtons(): Promise<SiteButton[]>;
   upsertSiteButton(button: InsertSiteButton): Promise<SiteButton>;
+  getReviews(): Promise<Review[]>;
+  createReview(review: InsertReview): Promise<Review>;
+  updateReview(id: string, review: Partial<InsertReview>): Promise<Review | undefined>;
+  deleteReview(id: string): Promise<boolean>;
+  getBlogPosts(): Promise<BlogPost[]>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  updateBlogPost(id: string, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
+  deleteBlogPost(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -29,6 +39,8 @@ export class MemStorage implements IStorage {
   private buttonClicks: Map<string, ButtonClick>;
   private newsletterSubscribers: Map<string, NewsletterSubscriber>;
   private siteButtons: Map<string, SiteButton>;
+  private reviews: Map<string, Review>;
+  private blogPosts: Map<string, BlogPost>;
 
   constructor() {
     this.users = new Map();
@@ -36,7 +48,22 @@ export class MemStorage implements IStorage {
     this.buttonClicks = new Map();
     this.newsletterSubscribers = new Map();
     this.siteButtons = new Map();
+    this.reviews = new Map();
+    this.blogPosts = new Map();
     this.initializeSiteButtons();
+    this.initializeDefaultReviews();
+  }
+
+  private initializeDefaultReviews() {
+    const defaultReviews: InsertReview[] = [
+      { name: "Priya Sharma", role: "Engineering Student", rating: 5, text: "Dr. Upadhyay's guidance was transformative. I was confused between multiple career paths, but his structured approach helped me discover my true passion in biotechnology. Now I'm pursuing my dream career!", isActive: "true" },
+      { name: "Rajesh Kumar", role: "Corporate Professional", rating: 5, text: "After 10 years in IT, I felt stuck. The counselling sessions helped me identify transferable skills and transition into product management. Best investment in my career!", isActive: "true" },
+      { name: "Meera Patel", role: "Parent", rating: 5, text: "As a parent, I wanted the best for my daughter's future. Dr. Upadhyay's empathetic approach and expertise helped us understand her strengths and choose the right career path together.", isActive: "true" },
+    ];
+    defaultReviews.forEach((review, index) => {
+      const id = `review-${index + 1}`;
+      this.reviews.set(id, { ...review, id, image: null, rating: review.rating ?? 5, isActive: review.isActive ?? "true", createdAt: new Date() });
+    });
   }
 
   private initializeSiteButtons() {
@@ -205,6 +232,75 @@ export class MemStorage implements IStorage {
     };
     this.siteButtons.set(button.id, siteButton);
     return siteButton;
+  }
+
+  async getReviews(): Promise<Review[]> {
+    return Array.from(this.reviews.values()).sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async createReview(review: InsertReview): Promise<Review> {
+    const id = randomUUID();
+    const newReview: Review = {
+      id,
+      name: review.name,
+      role: review.role,
+      image: review.image ?? null,
+      rating: review.rating ?? 5,
+      text: review.text,
+      isActive: review.isActive ?? "true",
+      createdAt: new Date(),
+    };
+    this.reviews.set(id, newReview);
+    return newReview;
+  }
+
+  async updateReview(id: string, review: Partial<InsertReview>): Promise<Review | undefined> {
+    const existing = this.reviews.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...review };
+    this.reviews.set(id, updated);
+    return updated;
+  }
+
+  async deleteReview(id: string): Promise<boolean> {
+    return this.reviews.delete(id);
+  }
+
+  async getBlogPosts(): Promise<BlogPost[]> {
+    return Array.from(this.blogPosts.values()).sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const id = randomUUID();
+    const newPost: BlogPost = {
+      id,
+      title: post.title,
+      excerpt: post.excerpt,
+      content: post.content,
+      category: post.category,
+      image: post.image ?? null,
+      readTime: post.readTime ?? "5 min read",
+      isPublished: post.isPublished ?? "false",
+      createdAt: new Date(),
+    };
+    this.blogPosts.set(id, newPost);
+    return newPost;
+  }
+
+  async updateBlogPost(id: string, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    const existing = this.blogPosts.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...post };
+    this.blogPosts.set(id, updated);
+    return updated;
+  }
+
+  async deleteBlogPost(id: string): Promise<boolean> {
+    return this.blogPosts.delete(id);
   }
 }
 

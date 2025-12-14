@@ -28,6 +28,25 @@ const newsletterSubscribeSchema = z.object({
   email: z.string().email(),
 });
 
+const reviewSchema = z.object({
+  name: z.string().min(1),
+  role: z.string().min(1),
+  image: z.string().optional(),
+  rating: z.number().min(1).max(5).optional(),
+  text: z.string().min(1),
+  isActive: z.string().optional(),
+});
+
+const blogPostSchema = z.object({
+  title: z.string().min(1),
+  excerpt: z.string().min(1),
+  content: z.string().min(1),
+  category: z.string().min(1),
+  image: z.string().optional(),
+  readTime: z.string().optional(),
+  isPublished: z.string().optional(),
+});
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -223,6 +242,139 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Get buttons error:", error);
       res.status(500).json({ error: "Failed to get buttons" });
+    }
+  });
+
+  // Reviews CRUD
+  app.get("/api/admin/reviews", async (_req, res) => {
+    try {
+      const reviews = await storage.getReviews();
+      res.json(reviews);
+    } catch (error) {
+      console.error("Get reviews error:", error);
+      res.status(500).json({ error: "Failed to get reviews" });
+    }
+  });
+
+  app.post("/api/admin/reviews", async (req, res) => {
+    try {
+      const result = reviewSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid review data" });
+      }
+      const review = await storage.createReview(result.data);
+      res.json(review);
+    } catch (error) {
+      console.error("Create review error:", error);
+      res.status(500).json({ error: "Failed to create review" });
+    }
+  });
+
+  app.put("/api/admin/reviews/:id", async (req, res) => {
+    try {
+      const result = reviewSchema.partial().safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid review data" });
+      }
+      const review = await storage.updateReview(req.params.id, result.data);
+      if (!review) {
+        return res.status(404).json({ error: "Review not found" });
+      }
+      res.json(review);
+    } catch (error) {
+      console.error("Update review error:", error);
+      res.status(500).json({ error: "Failed to update review" });
+    }
+  });
+
+  app.delete("/api/admin/reviews/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteReview(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Review not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Delete review error:", error);
+      res.status(500).json({ error: "Failed to delete review" });
+    }
+  });
+
+  // Blog Posts CRUD
+  app.get("/api/admin/blogs", async (_req, res) => {
+    try {
+      const posts = await storage.getBlogPosts();
+      res.json(posts);
+    } catch (error) {
+      console.error("Get blog posts error:", error);
+      res.status(500).json({ error: "Failed to get blog posts" });
+    }
+  });
+
+  app.post("/api/admin/blogs", async (req, res) => {
+    try {
+      const result = blogPostSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid blog post data" });
+      }
+      const post = await storage.createBlogPost(result.data);
+      res.json(post);
+    } catch (error) {
+      console.error("Create blog post error:", error);
+      res.status(500).json({ error: "Failed to create blog post" });
+    }
+  });
+
+  app.put("/api/admin/blogs/:id", async (req, res) => {
+    try {
+      const result = blogPostSchema.partial().safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid blog post data" });
+      }
+      const post = await storage.updateBlogPost(req.params.id, result.data);
+      if (!post) {
+        return res.status(404).json({ error: "Blog post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      console.error("Update blog post error:", error);
+      res.status(500).json({ error: "Failed to update blog post" });
+    }
+  });
+
+  app.delete("/api/admin/blogs/:id", async (req, res) => {
+    try {
+      const deleted = await storage.deleteBlogPost(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: "Blog post not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Delete blog post error:", error);
+      res.status(500).json({ error: "Failed to delete blog post" });
+    }
+  });
+
+  // Public endpoints for reviews and blogs
+  app.get("/api/reviews", async (_req, res) => {
+    try {
+      const reviews = await storage.getReviews();
+      const activeReviews = reviews.filter(r => r.isActive === "true");
+      res.json(activeReviews);
+    } catch (error) {
+      console.error("Get public reviews error:", error);
+      res.status(500).json({ error: "Failed to get reviews" });
+    }
+  });
+
+  app.get("/api/blogs", async (_req, res) => {
+    try {
+      const posts = await storage.getBlogPosts();
+      const publishedPosts = posts.filter(p => p.isPublished === "true");
+      res.json(publishedPosts);
+    } catch (error) {
+      console.error("Get public blog posts error:", error);
+      res.status(500).json({ error: "Failed to get blog posts" });
     }
   });
 
