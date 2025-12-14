@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { z } from "zod";
+import OpenAI from "openai";
 
 const createOrderSchema = z.object({
   amount: z.number().positive(),
@@ -45,6 +46,10 @@ const blogPostSchema = z.object({
   image: z.string().optional(),
   readTime: z.string().optional(),
   isPublished: z.string().optional(),
+});
+
+const generateBlogSchema = z.object({
+  topic: z.string().min(1),
 });
 
 export async function registerRoutes(
@@ -375,6 +380,44 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Get public blog posts error:", error);
       res.status(500).json({ error: "Failed to get blog posts" });
+    }
+  });
+
+  // AI Blog Generation
+  const openai = new OpenAI({
+    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+  });
+
+  app.post("/api/admin/blogs/generate", async (req, res) => {
+    try {
+      const result = generateBlogSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ error: "Topic is required" });
+      }
+      
+      const { topic } = result.data;
+      
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You are a professional career counselling blog writer. Write engaging, informative blog posts about career guidance, education, and professional development. Format your response as JSON with these fields: title, excerpt (2-3 sentences), content (full article with paragraphs), category (one of: Career Tips, Education, Professional Development, Interview Skills, Resume Building), readTime (e.g., "5 min read").`
+          },
+          {
+            role: "user",
+            content: `Write a blog post about: ${topic}`
+          }
+        ],
+        response_format: { type: "json_object" }
+      });
+      
+      const generatedContent = JSON.parse(completion.choices[0].message.content || "{}");
+      res.json(generatedContent);
+    } catch (error) {
+      console.error("Generate blog error:", error);
+      res.status(500).json({ error: "Failed to generate blog content" });
     }
   });
 

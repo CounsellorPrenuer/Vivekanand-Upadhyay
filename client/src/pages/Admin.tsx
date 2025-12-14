@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { 
   DollarSign, Users, MousePointerClick, ShoppingCart, 
-  Mail, TrendingUp, Layout, ChevronRight, Star, Plus, Pencil, Trash2, FileText
+  Mail, TrendingUp, Layout, ChevronRight, Star, Plus, Pencil, Trash2, FileText, Sparkles, Loader2
 } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -498,6 +498,9 @@ function BlogsManager() {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [topicDialogOpen, setTopicDialogOpen] = useState(false);
+  const [topic, setTopic] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -572,99 +575,172 @@ function BlogsManager() {
     }
   };
 
+  const handleGenerateBlog = async () => {
+    if (!topic.trim()) {
+      toast({ title: "Please enter a topic", variant: "destructive" });
+      return;
+    }
+    
+    setIsGenerating(true);
+    try {
+      const response = await apiRequest("POST", "/api/admin/blogs/generate", { topic });
+      const generated = await response.json();
+      
+      setFormData({
+        title: generated.title || "",
+        excerpt: generated.excerpt || "",
+        content: generated.content || "",
+        category: generated.category || "Career Tips",
+        image: "",
+        readTime: generated.readTime || "5 min read",
+        isPublished: "false",
+      });
+      
+      setTopicDialogOpen(false);
+      setTopic("");
+      setIsDialogOpen(true);
+      toast({ title: "Blog content generated! Review and edit before publishing." });
+    } catch (error) {
+      toast({ title: "Failed to generate blog content", variant: "destructive" });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   if (isLoading) {
     return <div className="animate-pulse h-32 bg-muted rounded" />;
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center gap-2">
+      <div className="flex justify-between items-center gap-2 flex-wrap">
         <h3 className="font-semibold">Manage Blog Posts</h3>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button data-testid="button-add-blog" onClick={() => { resetForm(); setIsDialogOpen(true); }}>
-              <Plus className="h-4 w-4 mr-2" /> Add Blog Post
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{editingPost ? "Edit Blog Post" : "Add New Blog Post"}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label>Title</Label>
-                <Input 
-                  data-testid="input-blog-title"
-                  value={formData.title} 
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })} 
-                />
-              </div>
-              <div>
-                <Label>Category</Label>
-                <Input 
-                  data-testid="input-blog-category"
-                  value={formData.category} 
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })} 
-                  placeholder="e.g., Career Tips, Education"
-                />
-              </div>
-              <div>
-                <Label>Excerpt</Label>
-                <Textarea 
-                  data-testid="input-blog-excerpt"
-                  value={formData.excerpt} 
-                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })} 
-                  placeholder="Brief summary of the post"
-                  rows={2}
-                />
-              </div>
-              <div>
-                <Label>Content</Label>
-                <Textarea 
-                  data-testid="input-blog-content"
-                  value={formData.content} 
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })} 
-                  placeholder="Full blog post content"
-                  rows={8}
-                />
-              </div>
-              <div>
-                <Label>Image URL (optional)</Label>
-                <Input 
-                  data-testid="input-blog-image"
-                  value={formData.image} 
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })} 
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-              <div>
-                <Label>Read Time</Label>
-                <Input 
-                  data-testid="input-blog-readtime"
-                  value={formData.readTime} 
-                  onChange={(e) => setFormData({ ...formData, readTime: e.target.value })} 
-                  placeholder="5 min read"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch 
-                  data-testid="switch-blog-published"
-                  checked={formData.isPublished === "true"} 
-                  onCheckedChange={(checked) => setFormData({ ...formData, isPublished: checked ? "true" : "false" })} 
-                />
-                <Label>Published</Label>
-              </div>
-              <Button 
-                data-testid="button-submit-blog"
-                className="w-full" 
-                onClick={handleSubmit}
-                disabled={createMutation.isPending || updateMutation.isPending}
-              >
-                {editingPost ? "Update Blog Post" : "Create Blog Post"}
+        <div className="flex gap-2 flex-wrap">
+          <Dialog open={topicDialogOpen} onOpenChange={setTopicDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" data-testid="button-generate-blog">
+                <Sparkles className="h-4 w-4 mr-2" /> Generate with AI
               </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Generate Blog with AI</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label>What topic should the blog be about?</Label>
+                  <Input
+                    data-testid="input-blog-topic"
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    placeholder="e.g., How to prepare for campus placements"
+                  />
+                </div>
+                <Button
+                  data-testid="button-generate-submit"
+                  className="w-full"
+                  onClick={handleGenerateBlog}
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" /> Generate Blog
+                    </>
+                  )}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button data-testid="button-add-blog" onClick={() => { resetForm(); setIsDialogOpen(true); }}>
+                <Plus className="h-4 w-4 mr-2" /> Add Blog Post
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{editingPost ? "Edit Blog Post" : "Add New Blog Post"}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label>Title</Label>
+                  <Input 
+                    data-testid="input-blog-title"
+                    value={formData.title} 
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })} 
+                  />
+                </div>
+                <div>
+                  <Label>Category</Label>
+                  <Input 
+                    data-testid="input-blog-category"
+                    value={formData.category} 
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })} 
+                    placeholder="e.g., Career Tips, Education"
+                  />
+                </div>
+                <div>
+                  <Label>Excerpt</Label>
+                  <Textarea 
+                    data-testid="input-blog-excerpt"
+                    value={formData.excerpt} 
+                    onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })} 
+                    placeholder="Brief summary of the post"
+                    rows={2}
+                  />
+                </div>
+                <div>
+                  <Label>Content</Label>
+                  <Textarea 
+                    data-testid="input-blog-content"
+                    value={formData.content} 
+                    onChange={(e) => setFormData({ ...formData, content: e.target.value })} 
+                    placeholder="Full blog post content"
+                    rows={8}
+                  />
+                </div>
+                <div>
+                  <Label>Image URL (optional)</Label>
+                  <Input 
+                    data-testid="input-blog-image"
+                    value={formData.image} 
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })} 
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+                <div>
+                  <Label>Read Time</Label>
+                  <Input 
+                    data-testid="input-blog-readtime"
+                    value={formData.readTime} 
+                    onChange={(e) => setFormData({ ...formData, readTime: e.target.value })} 
+                    placeholder="5 min read"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch 
+                    data-testid="switch-blog-published"
+                    checked={formData.isPublished === "true"} 
+                    onCheckedChange={(checked) => setFormData({ ...formData, isPublished: checked ? "true" : "false" })} 
+                  />
+                  <Label>Published</Label>
+                </div>
+                <Button 
+                  data-testid="button-submit-blog"
+                  className="w-full" 
+                  onClick={handleSubmit}
+                  disabled={createMutation.isPending || updateMutation.isPending}
+                >
+                  {editingPost ? "Update Blog Post" : "Create Blog Post"}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <div className="space-y-3">
