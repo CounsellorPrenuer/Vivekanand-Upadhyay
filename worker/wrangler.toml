@@ -1,0 +1,9 @@
+name = "vivekanand-upadhyay-api"
+main = "src/index.ts"
+compatibility_date = "2024-03-10"
+compatibility_flags = [ "nodejs_compat" ]
+
+[vars]
+# DATABASE_URL will be set as a secret
+# RAZORPAY_KEY_ID will be set as a secret
+# RAZORPAY_KEY_SECRET will be set as a secret

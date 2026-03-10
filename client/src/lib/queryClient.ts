@@ -7,16 +7,17 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+const WORKER_URL = "https://vivekanand-upadhyay-api.gauravgoodreads.workers.dev";
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const res = await fetch(WORKER_URL + url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
   });
 
   await throwIfResNotOk(res);

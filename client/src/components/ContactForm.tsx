@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { apiRequest } from "@/lib/queryClient";
 import {
   Form,
   FormControl,
@@ -60,11 +61,7 @@ export default function ContactForm() {
     const mailtoUrl = `mailto:vivekupadhyay2005@gmail.com?subject=${subject}&body=${body}`;
     
     // Save to database
-    fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }).catch(err => console.error("Failed to save to DB:", err));
+    apiRequest("POST", "/api/contact", data).catch((err: any) => console.error("Failed to save to DB:", err));
 
     // Redirect to mailto link
     window.location.href = mailtoUrl;
