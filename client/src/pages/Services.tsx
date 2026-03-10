@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { Compass, Users, UserCheck, Check, ArrowRight } from "lucide-react";
+import { Compass, Users, UserCheck, Check, ArrowRight, Loader2 } from "lucide-react";
 import PricingSection from "@/components/PricingSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,71 +10,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { client } from "@/lib/sanity";
 
-const services = [
-  {
-    icon: Compass,
-    title: "Career Guidance",
-    price: "Starting from ₹2,500",
-    description: "Comprehensive career assessment and personalized guidance to discover your ideal career path.",
-    features: [
-      "Psychometric Assessment",
-      "Interest & Aptitude Analysis",
-      "Career Path Mapping",
-      "Industry Insights",
-      "Action Plan Development",
-    ],
-  },
-  {
-    icon: Users,
-    title: "Workshops & Seminars",
-    price: "Custom Pricing",
-    description: "Interactive sessions for schools, colleges, and organizations on career planning.",
-    features: [
-      "Customized Content",
-      "Interactive Sessions",
-      "Group Activities",
-      "Q&A Sessions",
-      "Resource Materials",
-    ],
-  },
-  {
-    icon: UserCheck,
-    title: "One-on-One Counselling",
-    price: "₹3,500 per session",
-    description: "Personalized counselling sessions tailored to your specific career challenges.",
-    features: [
-      "60-minute Sessions",
-      "Personalized Attention",
-      "Follow-up Support",
-      "Career Resources",
-      "Email Support",
-    ],
-  },
-];
-
-const faqs = [
-  {
-    question: "How long is a typical counselling session?",
-    answer: "A typical one-on-one counselling session lasts 60 minutes. For comprehensive career assessments, we may schedule multiple sessions over a period of time to ensure thorough analysis and guidance.",
-  },
-  {
-    question: "Do you offer online consultations?",
-    answer: "Yes, I offer both online and in-person consultations. Online sessions are conducted via video call and are just as effective as in-person meetings. This allows me to help clients from anywhere in India.",
-  },
-  {
-    question: "What age groups do you work with?",
-    answer: "I work with individuals of all ages - from school students (Class 8 onwards) to working professionals considering career transitions. Each session is tailored to the specific needs and life stage of the client.",
-  },
-  {
-    question: "How do I book a consultation?",
-    answer: "You can book a consultation by filling out the contact form on this website, calling directly at +91 7030502200, or messaging on WhatsApp. I'll respond within 24 hours to schedule your session.",
-  },
-  {
-    question: "What if I'm not satisfied with the session?",
-    answer: "Client satisfaction is my priority. If you're not satisfied with the session, we can discuss your concerns and arrange a follow-up session at no additional cost. Your career success is my commitment.",
-  },
-];
+const iconMap: Record<string, any> = {
+  Compass,
+  Users,
+  UserCheck,
+};
 
 const processSteps = [
   { step: 1, title: "Initial Consultation", description: "Understand your background, goals, and challenges" },
@@ -84,6 +27,37 @@ const processSteps = [
 ];
 
 export default function Services() {
+  const [services, setServices] = useState<any[]>([]);
+  const [faqs, setFaqs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [servicesData, faqsData] = await Promise.all([
+          client.fetch(`*[_type == "service"]`),
+          client.fetch(`*[_type == "faq"]`),
+        ]);
+        setServices(servicesData);
+        setFaqs(faqsData);
+      } catch (error) {
+        console.error("Error fetching services/faqs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="py-20 flex justify-center items-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      </div>
+    );
+  }
+
   return (
     <main className="pt-20">
       <section className="py-16 bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-teal-500/10">
@@ -100,37 +74,40 @@ export default function Services() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <Card
-                key={service.title}
-                className="relative overflow-visible bg-gradient-to-br from-card to-card/50 border-border/50 hover-elevate"
-                data-testid={`card-service-detail-${index}`}
-              >
-                <CardHeader className="text-center pb-4">
-                  <div className="w-16 h-16 mx-auto rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 flex items-center justify-center mb-4 shadow-lg">
-                    <service.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <CardTitle className="text-xl">{service.title}</CardTitle>
-                  <p className="text-lg font-semibold text-blue-500">{service.price}</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground text-sm text-center mb-6">{service.description}</p>
-                  <ul className="space-y-3">
-                    {service.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm">
-                        <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href="/contact">
-                    <Button className="w-full mt-6 gap-2" data-testid={`button-service-book-${index}`}>
-                      Book Now <ArrowRight className="w-4 h-4" />
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+            {services.map((service, index) => {
+              const Icon = iconMap[service.iconName] || Compass;
+              return (
+                <Card
+                  key={service.title}
+                  className="relative overflow-visible bg-gradient-to-br from-card to-card/50 border-border/50 hover-elevate"
+                  data-testid={`card-service-detail-${index}`}
+                >
+                  <CardHeader className="text-center pb-4">
+                    <div className="w-16 h-16 mx-auto rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 flex items-center justify-center mb-4 shadow-lg">
+                      <Icon className="w-8 h-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl">{service.title}</CardTitle>
+                    <p className="text-lg font-semibold text-blue-500">{service.price}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground text-sm text-center mb-6">{service.description}</p>
+                    <ul className="space-y-3">
+                      {service.features?.map((feature: string) => (
+                        <li key={feature} className="flex items-center gap-2 text-sm">
+                          <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                    <Link href="/contact">
+                      <Button className="w-full mt-6 gap-2" data-testid={`button-service-book-${index}`}>
+                        Book Now <ArrowRight className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -169,33 +146,35 @@ export default function Services() {
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">
-              Frequently Asked <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-teal-500 bg-clip-text text-transparent">Questions</span>
-            </h2>
-          </div>
+      {faqs.length > 0 && (
+        <section className="py-16">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">
+                Frequently Asked <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-teal-500 bg-clip-text text-transparent">Questions</span>
+              </h2>
+            </div>
 
-          <Accordion type="single" collapsible className="space-y-4">
-            {faqs.map((faq, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="bg-card border border-border rounded-lg px-6"
-                data-testid={`faq-${index}`}
-              >
-                <AccordionTrigger className="text-left hover:no-underline py-4">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-4">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
+            <Accordion type="single" collapsible className="space-y-4">
+              {faqs.map((faq, index) => (
+                <AccordionItem
+                  key={index}
+                  value={`item-${index}`}
+                  className="bg-card border border-border rounded-lg px-6"
+                  data-testid={`faq-${index}`}
+                >
+                  <AccordionTrigger className="text-left hover:no-underline py-4">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground pb-4">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </section>
+      )}
 
       <section className="py-16 bg-gradient-to-br from-blue-600 via-purple-600 to-teal-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

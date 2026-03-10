@@ -52,6 +52,14 @@ const generateBlogSchema = z.object({
   topic: z.string().min(1),
 });
 
+const contactSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  phone: z.string().min(10),
+  service: z.string().min(1),
+  message: z.string().min(10),
+});
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -175,6 +183,20 @@ export async function registerRoutes(
     } catch (error) {
       console.error("Newsletter subscribe error:", error);
       res.status(500).json({ error: "Failed to subscribe" });
+    }
+  });
+
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const result = contactSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ error: "Invalid form data" });
+      }
+      const contact = await storage.createContact(result.data);
+      res.json({ success: true, contact });
+    } catch (error) {
+      console.error("Contact form error:", error);
+      res.status(500).json({ error: "Failed to save contact" });
     }
   });
 

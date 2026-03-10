@@ -1,78 +1,38 @@
-import { useState } from "react";
-import { Search, Calendar, Clock, ArrowRight, Tag } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, Calendar, Clock, ArrowRight, Tag, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { client, urlFor } from "@/lib/sanity";
 
-// todo: remove mock functionality - replace with real blog posts from database
 const categories = ["All", "Career Tips", "Student Guidance", "Industry Insights", "Success Stories"];
 
-const blogPosts = [
-  {
-    id: 1,
-    title: "10 Tips for Choosing the Right Career Path",
-    excerpt: "Discover practical strategies to identify your ideal career based on your strengths, interests, and market opportunities.",
-    category: "Career Tips",
-    date: "Dec 10, 2024",
-    readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=250&fit=crop",
-  },
-  {
-    id: 2,
-    title: "How Parents Can Support Their Child's Career Decisions",
-    excerpt: "A guide for parents on how to nurture and guide their children's career aspirations without imposing expectations.",
-    category: "Student Guidance",
-    date: "Dec 5, 2024",
-    readTime: "7 min read",
-    image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=400&h=250&fit=crop",
-  },
-  {
-    id: 3,
-    title: "Emerging Careers in 2025: What You Need to Know",
-    excerpt: "Explore the most promising career fields for the upcoming year and how to prepare yourself for these opportunities.",
-    category: "Industry Insights",
-    date: "Nov 28, 2024",
-    readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=250&fit=crop",
-  },
-  {
-    id: 4,
-    title: "From Confusion to Clarity: A Student's Journey",
-    excerpt: "Read about how one student transformed their career uncertainty into a clear path forward through proper guidance.",
-    category: "Success Stories",
-    date: "Nov 20, 2024",
-    readTime: "6 min read",
-    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=250&fit=crop",
-  },
-  {
-    id: 5,
-    title: "The Importance of Soft Skills in Modern Careers",
-    excerpt: "Why technical skills alone aren't enough and how developing soft skills can accelerate your career growth.",
-    category: "Career Tips",
-    date: "Nov 15, 2024",
-    readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=250&fit=crop",
-  },
-  {
-    id: 6,
-    title: "Career Transition After 30: It's Never Too Late",
-    excerpt: "Inspiring insights and practical advice for professionals considering a career change in their 30s and beyond.",
-    category: "Career Tips",
-    date: "Nov 10, 2024",
-    readTime: "9 min read",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=250&fit=crop",
-  },
-];
-
 export default function Blog() {
+  const [blogPosts, setBlogPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const { toast } = useToast();
 
-  const handleReadArticle = (postId: number) => {
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const data = await client.fetch(`*[_type == "blogPost"] | order(date desc)`);
+        setBlogPosts(data);
+      } catch (error) {
+        console.error("Error fetching blog posts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const handleReadArticle = (postId: string) => {
     toast({
       title: "Coming Soon!",
       description: "Full articles will be available soon. Stay tuned!",
@@ -108,6 +68,14 @@ export default function Blog() {
     const matchesCategory = activeCategory === "All" || post.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
+
+  if (loading) {
+    return (
+      <div className="py-20 flex justify-center items-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      </div>
+    );
+  }
 
   return (
     <main className="pt-20">
@@ -160,16 +128,20 @@ export default function Blog() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPosts.map((post) => (
                 <Card
-                  key={post.id}
+                  key={post._id}
                   className="group overflow-hidden bg-card border-border/50 hover-elevate"
-                  data-testid={`card-blog-${post.id}`}
+                  data-testid={`card-blog-${post._id}`}
                 >
-                  <div className="aspect-video overflow-hidden">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                  <div className="aspect-video overflow-hidden bg-muted">
+                    {post.mainImage ? (
+                      <img
+                        src={urlFor(post.mainImage).width(400).height(250).url()}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">No Image</div>
+                    )}
                   </div>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-2 mb-3">
@@ -186,7 +158,7 @@ export default function Blog() {
                       <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
-                          {post.date}
+                          {new Date(post.date).toLocaleDateString()}
                         </span>
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
@@ -197,8 +169,8 @@ export default function Blog() {
                         variant="ghost"
                         size="sm"
                         className="gap-1 p-0 h-auto"
-                        onClick={() => handleReadArticle(post.id)}
-                        data-testid={`button-read-${post.id}`}
+                        onClick={() => handleReadArticle(post._id)}
+                        data-testid={`button-read-${post._id}`}
                       >
                         Read <ArrowRight className="w-3 h-3" />
                       </Button>

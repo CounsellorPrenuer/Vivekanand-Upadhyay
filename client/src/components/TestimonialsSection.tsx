@@ -1,49 +1,57 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Star, Quote, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import studentImage from "@assets/generated_images/female_student_testimonial_portrait.png";
-import professionalImage from "@assets/generated_images/male_professional_testimonial_portrait.png";
-import parentImage from "@assets/generated_images/female_parent_testimonial_portrait.png";
+import { client, urlFor } from "@/lib/sanity";
 
-// todo: remove mock functionality - replace with real testimonials from database
-const testimonials = [
-  {
-    id: 1,
-    name: "Priya Sharma",
-    role: "Engineering Student",
-    image: studentImage,
-    rating: 5,
-    text: "Dr. Upadhyay's guidance was transformative. I was confused between multiple career paths, but his structured approach helped me discover my true passion in biotechnology. Now I'm pursuing my dream career!",
-  },
-  {
-    id: 2,
-    name: "Rajesh Kumar",
-    role: "Corporate Professional",
-    image: professionalImage,
-    rating: 5,
-    text: "After 10 years in IT, I felt stuck. The counselling sessions helped me identify transferable skills and transition into product management. Best investment in my career!",
-  },
-  {
-    id: 3,
-    name: "Meera Patel",
-    role: "Parent",
-    image: parentImage,
-    rating: 5,
-    text: "As a parent, I wanted the best for my daughter's future. Dr. Upadhyay's empathetic approach and expertise helped us understand her strengths and choose the right career path together.",
-  },
-];
+interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  image?: any;
+  rating: number;
+  text: string;
+}
 
 export default function TestimonialsSection() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const data = await client.fetch(`*[_type == "testimonial"]`);
+        setTestimonials(data);
+      } catch (error) {
+        console.error("Error fetching testimonials:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
 
   const next = () => {
+    if (testimonials.length === 0) return;
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   };
 
   const prev = () => {
+    if (testimonials.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
+
+  if (loading) {
+    return (
+      <div className="py-20 flex justify-center items-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      </div>
+    );
+  }
+
+  if (testimonials.length === 0) return null;
 
   return (
     <section className="py-20" id="testimonials">
@@ -66,12 +74,17 @@ export default function TestimonialsSection() {
                 <div className="flex-shrink-0">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 rounded-full blur-lg opacity-50" />
-                    <img
-                      src={testimonials[currentIndex].image}
-                      alt={testimonials[currentIndex].name}
-                      className="relative w-24 h-24 rounded-full object-cover border-4 border-white/20"
-                      data-testid={`img-testimonial-${currentIndex}`}
-                    />
+                    {testimonials[currentIndex].image ? (
+                      <img
+                        src={urlFor(testimonials[currentIndex].image).width(200).height(200).url()}
+                        alt={testimonials[currentIndex].name}
+                        className="relative w-24 h-24 rounded-full object-cover border-4 border-white/20"
+                      />
+                    ) : (
+                      <div className="relative w-24 h-24 rounded-full bg-muted flex items-center justify-center border-4 border-white/20 text-2xl font-bold">
+                        {testimonials[currentIndex].name[0]}
+                      </div>
+                    )}
                   </div>
                 </div>
 

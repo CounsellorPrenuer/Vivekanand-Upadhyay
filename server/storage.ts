@@ -4,9 +4,13 @@ import {
   type NewsletterSubscriber, type InsertNewsletterSubscriber,
   type SiteButton, type InsertSiteButton,
   type Review, type InsertReview,
-  type BlogPost, type InsertBlogPost
+  type BlogPost, type InsertBlogPost,
+  type Contact, type InsertContact,
+  users, orders, buttonClicks, newsletterSubscribers, siteButtons, reviews, blogPosts, contacts
 } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -31,6 +35,7 @@ export interface IStorage {
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
   updateBlogPost(id: string, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
   deleteBlogPost(id: string): Promise<boolean>;
+  createContact(contact: InsertContact): Promise<Contact>;
 }
 
 export class MemStorage implements IStorage {
@@ -41,6 +46,7 @@ export class MemStorage implements IStorage {
   private siteButtons: Map<string, SiteButton>;
   private reviews: Map<string, Review>;
   private blogPosts: Map<string, BlogPost>;
+  private contacts: Map<string, Contact>;
 
   constructor() {
     this.users = new Map();
@@ -50,6 +56,7 @@ export class MemStorage implements IStorage {
     this.siteButtons = new Map();
     this.reviews = new Map();
     this.blogPosts = new Map();
+    this.contacts = new Map();
     this.initializeSiteButtons();
     this.initializeDefaultReviews();
   }
@@ -302,6 +309,146 @@ export class MemStorage implements IStorage {
   async deleteBlogPost(id: string): Promise<boolean> {
     return this.blogPosts.delete(id);
   }
+
+  async createContact(insertContact: InsertContact): Promise<Contact> {
+    const id = randomUUID();
+    const contact: Contact = { ...insertContact, id, createdAt: new Date() };
+    this.contacts.set(id, contact);
+    return contact;
+  }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const [newUser] = await db.insert(users).values(user).returning();
+    return newUser;
+  }
+
+  async createOrder(orderData: Omit<InsertOrder, "razorpayPaymentId" | "customerEmail" | "customerPhone" | "customerName">): Promise<Order> {
+    const [newOrder] = await db.insert(orders).values({
+      razorpayOrderId: orderData.razorpayOrderId,
+      amount: orderData.amount,
+      currency: orderData.currency || "INR",
+      planName: orderData.planName,
+      category: orderData.category,
+      status: orderData.status || "created",
+    }).returning();
+    return newOrder;
+  }
+
+  async getOrderByRazorpayId(razorpayOrderId: string): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.razorpayOrderId, razorpayOrderId));
+    return order;
+  }
+
+  async updateOrderPayment(razorpayOrderId: string, paymentId: string): Promise<Order | undefined> {
+    const [updatedOrder] = await db.update(orders)
+      .set({ razorpayPaymentId: paymentId, status: "paid", paidAt: new Date() })
+      .where(eq(orders.razorpayOrderId, razorpayOrderId))
+      .returning();
+    return updatedOrder;
+  }
+
+  async getAllOrders(): Promise<Order[]> {
+    return await db.select().from(orders).orderBy(desc(orders.createdAt));
+  }
+
+  async trackButtonClick(click: InsertButtonClick): Promise<ButtonClick> {
+    const [newClick] = await db.insert(buttonClicks).values(click).returning();
+    return newClick;
+  }
+
+  async getButtonClicks(): Promise<ButtonClick[]> {
+    return await db.select().from(buttonClicks).orderBy(desc(buttonClicks.clickedAt));
+  }
+
+  async getButtonClickStats(): Promise<{ buttonId: string; buttonLabel: string; section: string; count: number }[]> {
+    const result = await db.select({
+      buttonId: buttonClicks.buttonId,
+      buttonLabel: buttonClicks.buttonLabel,
+      section: buttonClicks.section,
+      count: sql<number>`count(*)`.mapWith(Number),
+    })
+    .from(buttonClicks)
+    .groupBy(buttonClicks.buttonId, buttonClicks.buttonLabel, buttonClicks.section)
+    .orderBy(desc(sql`count(*)`));
+    
+    return result;
+  }
+
+  async addNewsletterSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber> {
+    const [newSubscriber] = await db.insert(newsletterSubscribers).values(subscriber).returning();
+    return newSubscriber;
+  }
+
+  async getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
+    return await db.select().from(newsletterSubscribers).orderBy(desc(newsletterSubscribers.subscribedAt));
+  }
+
+  async getSiteButtons(): Promise<SiteButton[]> {
+    return await db.select().from(siteButtons);
+  }
+
+  async upsertSiteButton(button: InsertSiteButton): Promise<SiteButton> {
+    const [newButton] = await db.insert(siteButtons).values(button).onConflictDoUpdate({
+      target: siteButtons.id,
+      set: button,
+    }).returning();
+    return newButton;
+  }
+
+  async getReviews(): Promise<Review[]> {
+    return await db.select().from(reviews).orderBy(desc(reviews.createdAt));
+  }
+
+  async createReview(review: InsertReview): Promise<Review> {
+    const [newReview] = await db.insert(reviews).values(review).returning();
+    return newReview;
+  }
+
+  async updateReview(id: string, review: Partial<InsertReview>): Promise<Review | undefined> {
+    const [updated] = await db.update(reviews).set(review).where(eq(reviews.id, id)).returning();
+    return updated;
+  }
+
+  async deleteReview(id: string): Promise<boolean> {
+    const [deleted] = await db.delete(reviews).where(eq(reviews.id, id)).returning();
+    return !!deleted;
+  }
+
+  async getBlogPosts(): Promise<BlogPost[]> {
+    return await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const [newPost] = await db.insert(blogPosts).values(post).returning();
+    return newPost;
+  }
+
+  async updateBlogPost(id: string, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    const [updated] = await db.update(blogPosts).set(post).where(eq(blogPosts.id, id)).returning();
+    return updated;
+  }
+
+  async deleteBlogPost(id: string): Promise<boolean> {
+    const [deleted] = await db.delete(blogPosts).where(eq(blogPosts.id, id)).returning();
+    return !!deleted;
+  }
+
+  async createContact(contact: InsertContact): Promise<Contact> {
+    const [newContact] = await db.insert(contacts).values(contact).returning();
+    return newContact;
+  }
+}
+
+export const storage = process.env.DATABASE_URL ? new DatabaseStorage() : new MemStorage();

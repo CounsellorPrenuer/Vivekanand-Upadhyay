@@ -48,8 +48,27 @@ export default function ContactForm() {
   });
 
   const onSubmit = (data: ContactFormData) => {
-    // todo: remove mock functionality - replace with actual API call
-    console.log("Form submitted:", data);
+    const subject = encodeURIComponent(`Inquiry from ${data.name} regarding ${data.service}`);
+    const body = encodeURIComponent(
+      `Name: ${data.name}\n` +
+      `Email: ${data.email}\n` +
+      `Phone: ${data.phone}\n` +
+      `Service: ${data.service}\n\n` +
+      `Message:\n${data.message}`
+    );
+    
+    const mailtoUrl = `mailto:vivekupadhyay2005@gmail.com?subject=${subject}&body=${body}`;
+    
+    // Save to database
+    fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).catch(err => console.error("Failed to save to DB:", err));
+
+    // Redirect to mailto link
+    window.location.href = mailtoUrl;
+    
     setIsSubmitted(true);
     setTimeout(() => {
       setIsSubmitted(false);
