@@ -1,21 +1,39 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Calendar } from "lucide-react";
+import { ArrowRight, Calendar, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import profileImage from "@assets/vu-profile.jpg";
-
-const taglines = [
-  "Ex Army Physician",
-  "Career Counsellor",
-  "Guiding Your Journey to Fulfillment",
-];
+import { client, urlFor } from "@/lib/sanity";
+import profileImageFallback from "@assets/vu-profile.jpg";
 
 export default function HeroSection() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [currentTagline, setCurrentTagline] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await client.fetch(`*[_type == "heroSection"][0]`);
+        setData(result);
+      } catch (error) {
+        console.error("Error fetching hero data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const taglines = data?.taglines || [
+    "Ex Army Physician",
+    "Career Counsellor",
+    "Guiding Your Journey to Fulfillment",
+  ];
+
+  useEffect(() => {
+    if (!taglines.length) return;
     const text = taglines[currentTagline];
     let index = 0;
 
@@ -42,7 +60,15 @@ export default function HeroSection() {
       }, 30);
       return () => clearInterval(deleteInterval);
     }
-  }, [currentTagline, isTyping]);
+  }, [currentTagline, isTyping, taglines]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -64,10 +90,10 @@ export default function HeroSection() {
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
               <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-teal-500 bg-clip-text text-transparent">
-                Transform Your Career
+                {data?.title || "Transform Your Career"}
               </span>
               <br />
-              <span className="text-foreground">With Expert Guidance</span>
+              <span className="text-foreground">{data?.subtitle || "With Expert Guidance"}</span>
             </h1>
 
             <div className="h-8 mb-6 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
@@ -78,16 +104,13 @@ export default function HeroSection() {
             </div>
 
             <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-              With years of experience as an Army Physician and career counsellor, 
-              I help students, professionals, and organizations discover their true potential 
-              and make informed career decisions.
+              {data?.description || "Expert career counselling to help you discovery your potential."}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
               <Link href="/contact">
                 <Button
                   size="lg"
-                  data-testid="button-hero-consultation"
                   className="bg-gradient-to-r from-blue-600 via-purple-600 to-teal-500 text-white animate-pulse-glow gap-2"
                 >
                   <Calendar className="w-5 h-5" />
@@ -98,7 +121,6 @@ export default function HeroSection() {
                 <Button
                   size="lg"
                   variant="outline"
-                  data-testid="button-hero-services"
                   className="gap-2"
                 >
                   Explore Services
@@ -113,14 +135,13 @@ export default function HeroSection() {
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 rounded-full blur-2xl opacity-50 animate-pulse-glow" />
               <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl animate-float">
                 <img
-                  src={profileImage}
+                  src={data?.profileImage ? urlFor(data.profileImage).url() : profileImageFallback}
                   alt="Vivekanand Upadhyay - Career Counsellor"
                   className="w-full h-full object-cover"
-                  data-testid="img-hero-profile"
                 />
               </div>
               <div className="absolute -bottom-4 -right-4 bg-card border border-border rounded-lg px-4 py-2 shadow-lg animate-fade-in-up" style={{ animationDelay: "0.8s" }}>
-                <p className="text-sm font-medium">15+ Years Experience</p>
+                <p className="text-sm font-medium">{data?.experienceText || "15+ Years Experience"}</p>
               </div>
             </div>
           </div>

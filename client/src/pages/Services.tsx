@@ -18,30 +18,25 @@ const iconMap: Record<string, any> = {
   UserCheck,
 };
 
-const processSteps = [
-  { step: 1, title: "Initial Consultation", description: "Understand your background, goals, and challenges" },
-  { step: 2, title: "Assessment", description: "Comprehensive evaluation of interests, aptitudes, and personality" },
-  { step: 3, title: "Analysis", description: "Deep dive into career options aligned with your profile" },
-  { step: 4, title: "Action Plan", description: "Create a detailed roadmap for your career journey" },
-  { step: 5, title: "Follow-up", description: "Ongoing support to ensure successful implementation" },
-];
-
 export default function Services() {
   const [services, setServices] = useState<any[]>([]);
   const [faqs, setFaqs] = useState<any[]>([]);
+  const [processSteps, setProcessSteps] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [servicesData, faqsData] = await Promise.all([
-          client.fetch(`*[_type == "service"]`),
+        const [servicesData, faqsData, processData] = await Promise.all([
+          client.fetch(`*[_type == "service"] | order(_createdAt asc)`),
           client.fetch(`*[_type == "faq"]`),
+          client.fetch(`*[_type == "processStep"] | order(order asc)`),
         ]);
         setServices(servicesData);
         setFaqs(faqsData);
+        setProcessSteps(processData);
       } catch (error) {
-        console.error("Error fetching services/faqs:", error);
+        console.error("Error fetching services/faqs/process:", error);
       } finally {
         setLoading(false);
       }
@@ -75,12 +70,11 @@ export default function Services() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             {services.map((service, index) => {
-              const Icon = iconMap[service.iconName] || Compass;
+              const Icon = [Compass, Users, UserCheck][index % 3];
               return (
                 <Card
-                  key={service.title}
+                  key={service._id}
                   className="relative overflow-visible bg-gradient-to-br from-card to-card/50 border-border/50 hover-elevate"
-                  data-testid={`card-service-detail-${index}`}
                 >
                   <CardHeader className="text-center pb-4">
                     <div className="w-16 h-16 mx-auto rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 flex items-center justify-center mb-4 shadow-lg">
@@ -100,7 +94,7 @@ export default function Services() {
                       ))}
                     </ul>
                     <Link href="/contact">
-                      <Button className="w-full mt-6 gap-2" data-testid={`button-service-book-${index}`}>
+                      <Button className="w-full mt-6 gap-2">
                         Book Now <ArrowRight className="w-4 h-4" />
                       </Button>
                     </Link>
@@ -130,12 +124,11 @@ export default function Services() {
             <div className="grid md:grid-cols-5 gap-6">
               {processSteps.map((step, index) => (
                 <div
-                  key={step.step}
+                  key={step._id}
                   className="relative bg-card border border-border rounded-xl p-6 text-center hover-elevate"
-                  data-testid={`step-${index}`}
                 >
                   <div className="w-10 h-10 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 flex items-center justify-center text-white font-bold">
-                    {step.step}
+                    {step.order}
                   </div>
                   <h4 className="font-semibold mb-2">{step.title}</h4>
                   <p className="text-sm text-muted-foreground">{step.description}</p>
@@ -158,10 +151,9 @@ export default function Services() {
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, index) => (
                 <AccordionItem
-                  key={index}
+                  key={faq._id}
                   value={`item-${index}`}
                   className="bg-card border border-border rounded-lg px-6"
-                  data-testid={`faq-${index}`}
                 >
                   <AccordionTrigger className="text-left hover:no-underline py-4">
                     {faq.question}
@@ -186,7 +178,6 @@ export default function Services() {
             <Button
               size="lg"
               className="bg-white text-blue-600 hover:bg-white/90"
-              data-testid="button-services-cta"
             >
               Book Free Consultation
             </Button>

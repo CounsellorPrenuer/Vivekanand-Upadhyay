@@ -1,8 +1,37 @@
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { Calendar, Phone, Mail, MessageCircle } from "lucide-react";
+import { Calendar, Phone, Mail, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { client } from "@/lib/sanity";
 
 export default function CTASection() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await client.fetch(`*[_type == "ctaSection"][0]`);
+        setData(result);
+      } catch (error) {
+        console.error("Error fetching CTA data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="py-20 flex justify-center items-center bg-blue-600">
+        <Loader2 className="w-10 h-10 animate-spin text-white" />
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
   return (
     <section className="py-20 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-teal-500" />
@@ -10,29 +39,26 @@ export default function CTASection() {
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-          Ready to Transform Your Career?
+          {data.title}
         </h2>
         <p className="text-lg text-white/80 max-w-2xl mx-auto mb-10">
-          Take the first step towards a fulfilling career. Book a free consultation 
-          and let's discuss how I can help you achieve your professional goals.
+          {data.description}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Link href="/contact">
             <Button
               size="lg"
-              data-testid="button-cta-consultation"
               className="bg-white text-blue-600 hover:bg-white/90 gap-2 animate-pulse-glow"
             >
               <Calendar className="w-5 h-5" />
               Book Free Consultation
             </Button>
           </Link>
-          <a href="https://wa.me/917030502200" target="_blank" rel="noopener noreferrer">
+          <a href={`https://wa.me/${data.whatsapp}`} target="_blank" rel="noopener noreferrer">
             <Button
               size="lg"
               variant="outline"
-              data-testid="button-cta-whatsapp"
               className="border-white/30 text-white hover:bg-white/10 gap-2"
             >
               <MessageCircle className="w-5 h-5" />
@@ -43,20 +69,18 @@ export default function CTASection() {
 
         <div className="flex flex-wrap justify-center gap-8 text-white/80">
           <a
-            href="mailto:vivekupadhyay2005@gmail.com"
+            href={`mailto:${data.email}`}
             className="flex items-center gap-2 hover:text-white transition-colors"
-            data-testid="link-cta-email"
           >
             <Mail className="w-5 h-5" />
-            vivekupadhyay2005@gmail.com
+            {data.email}
           </a>
           <a
-            href="tel:+917030502200"
+            href={`tel:${data.phone.replace(/\s+/g, '')}`}
             className="flex items-center gap-2 hover:text-white transition-colors"
-            data-testid="link-cta-phone"
           >
             <Phone className="w-5 h-5" />
-            +91 7030502200
+            {data.phone}
           </a>
         </div>
       </div>

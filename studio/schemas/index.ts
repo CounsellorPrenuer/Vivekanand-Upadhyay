@@ -36,7 +36,7 @@ export const pricingCategory = {
         ],
       },
     },
-    { name: 'image', title: 'Header Image', type: 'image', hidden: ({document}) => document?.section !== 'custom' },
+    { name: 'image', title: 'Header Image', type: 'image', hidden: ({document}: any) => document?.section !== 'custom' },
     {
       name: 'plans',
       title: 'Plans',
@@ -114,4 +114,164 @@ export const coupon = {
   ],
 }
 
-export const schemaTypes = [pricingCategory, pricingPlan, testimonial, service, blogPost, coupon]
+export const heroSection = {
+  name: 'heroSection',
+  title: 'Hero Section',
+  type: 'document',
+  fields: [
+    { name: 'title', title: 'Title', type: 'string' },
+    { name: 'subtitle', title: 'Subtitle', type: 'string' },
+    { name: 'taglines', title: 'Taglines', type: 'array', of: [{ type: 'string' }] },
+    { name: 'description', title: 'Description', type: 'text' },
+    { name: 'profileImage', title: 'Profile Image', type: 'image' },
+    { name: 'experienceText', title: 'Experience Text', type: 'string' },
+  ],
+}
+
+export const aboutSection = {
+  name: 'aboutSection',
+  title: 'About Section',
+  type: 'document',
+  fields: [
+    { name: 'title', title: 'Title', type: 'string' },
+    { name: 'subtitle', title: 'Subtitle', type: 'text' },
+    { name: 'description1', title: 'Description Paragraph 1', type: 'text' },
+    { name: 'description2', title: 'Description Paragraph 2', type: 'text' },
+    {
+      name: 'timeline',
+      title: 'Timeline',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'year', title: 'Year', type: 'string' },
+            { name: 'title', title: 'Title', type: 'string' },
+            { name: 'description', title: 'Description', type: 'string' },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'traits',
+      title: 'Traits',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', title: 'Title', type: 'string' },
+            { name: 'description', title: 'Description', type: 'string' },
+            { name: 'icon', title: 'Icon Name', type: 'string' },
+          ],
+        },
+      ],
+    },
+  ],
+}
+
+export const statsSection = {
+  name: 'statsSection',
+  title: 'Stats Section',
+  type: 'document',
+  fields: [
+    { name: 'title', title: 'Title', type: 'string' },
+    { name: 'subtitle', title: 'Subtitle', type: 'text' },
+    {
+      name: 'stats',
+      title: 'Stats',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'value', title: 'Value', type: 'number' },
+            { name: 'suffix', title: 'Suffix', type: 'string' },
+            { name: 'label', title: 'Label', type: 'string' },
+            { name: 'icon', title: 'Icon Name', type: 'string' },
+          ],
+        },
+      ],
+    },
+    { name: 'philosophy', title: 'Philosophy Quote', type: 'text' },
+    { name: 'philosophyAuthor', title: 'Philosophy Author', type: 'string' },
+  ],
+}
+
+export const mentoriaSection = {
+  name: 'mentoriaSection',
+  title: 'Mentoria Section',
+  type: 'document',
+  fields: [
+    { name: 'title', title: 'Title', type: 'string' },
+    { name: 'subtitle', title: 'Subtitle', type: 'string' },
+    { name: 'description', title: 'Description', type: 'text' },
+    {
+      name: 'stats',
+      title: 'Stats',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'value', title: 'Value', type: 'string' },
+            { name: 'label', title: 'Label', type: 'string' },
+            { name: 'icon', title: 'Icon Name', type: 'string' },
+            { name: 'bgColor', title: 'Background Color Class', type: 'string' },
+            { name: 'iconColor', title: 'Icon Color Class', type: 'string' },
+          ],
+        },
+      ],
+    },
+  ],
+}
+
+export const ctaSection = {
+  name: 'ctaSection',
+  title: 'CTA Section',
+  type: 'document',
+  fields: [
+    { name: 'title', title: 'Title', type: 'string' },
+    { name: 'description', title: 'Description', type: 'text' },
+    { name: 'email', title: 'Email', type: 'string' },
+    { name: 'phone', title: 'Phone', type: 'string' },
+    { name: 'whatsapp', title: 'WhatsApp Number', type: 'string' },
+  ],
+}
+
+export const faq = {
+  name: 'faq',
+  title: 'FAQ',
+  type: 'document',
+  fields: [
+    { name: 'question', title: 'Question', type: 'string' },
+    { name: 'answer', title: 'Answer', type: 'text' },
+  ],
+}
+
+export const processStep = {
+  name: 'processStep',
+  title: 'Process Step',
+  type: 'document',
+  fields: [
+    { name: 'order', title: 'Order', type: 'number' },
+    { name: 'title', title: 'Title', type: 'string' },
+    { name: 'description', title: 'Description', type: 'text' },
+  ],
+}
+
+export const schemaTypes = [
+  pricingCategory,
+  pricingPlan,
+  testimonial,
+  service,
+  blogPost,
+  coupon,
+  heroSection,
+  aboutSection,
+  statsSection,
+  mentoriaSection,
+  ctaSection,
+  faq,
+  processStep
+]

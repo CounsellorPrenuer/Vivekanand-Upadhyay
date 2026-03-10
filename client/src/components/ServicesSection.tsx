@@ -1,29 +1,20 @@
-import { Compass, Users, UserCheck, GraduationCap, Building2, Briefcase, Heart, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Compass, Users, UserCheck, GraduationCap, Building2, Briefcase, Heart, ArrowRight, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { client } from "@/lib/sanity";
 
-const services = [
-  {
-    icon: Compass,
-    title: "Career Guidance",
-    description: "Comprehensive career assessment and personalized guidance to help you discover your ideal career path based on your strengths, interests, and market opportunities.",
-    audiences: ["Students", "Parents"],
-  },
-  {
-    icon: Users,
-    title: "Workshops & Seminars",
-    description: "Interactive sessions for schools, colleges, and organizations covering career planning, skill development, and industry insights.",
-    audiences: ["Schools", "Colleges", "Corporates"],
-  },
-  {
-    icon: UserCheck,
-    title: "One-on-One Counselling",
-    description: "Personalized counselling sessions tailored to your specific career challenges, transitions, and goals with actionable strategies.",
-    audiences: ["Professionals", "NGOs"],
-  },
-];
+const iconMap: { [key: string]: any } = {
+  Compass,
+  Users,
+  UserCheck,
+  GraduationCap,
+  Building2,
+  Briefcase,
+  Heart,
+};
 
 const allAudiences = [
   { icon: GraduationCap, label: "Students" },
@@ -36,6 +27,31 @@ const allAudiences = [
 ];
 
 export default function ServicesSection() {
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const result = await client.fetch(`*[_type == "service"] | order(_createdAt asc)`);
+        setServices(result);
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchServices();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="py-20 flex justify-center items-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <section className="py-20" id="services">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,36 +65,39 @@ export default function ServicesSection() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {services.map((service, index) => (
-            <Card
-              key={service.title}
-              className="group relative overflow-visible bg-gradient-to-br from-card to-card/50 border-border/50 hover-elevate"
-              data-testid={`card-service-${index}`}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
-              <CardHeader className="pb-4">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
-                  <service.icon className="w-7 h-7 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold">{service.title}</h3>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4 text-sm leading-relaxed">{service.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {service.audiences.map((audience) => (
-                    <Badge key={audience} variant="secondary" className="text-xs">
-                      {audience}
-                    </Badge>
-                  ))}
-                </div>
-                <Link href="/services">
-                  <Button variant="ghost" className="gap-1 p-0 h-auto" data-testid={`button-learn-more-${index}`}>
-                    Learn More <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
+          {services.slice(0, 3).map((service, index) => {
+            const Icon = [Compass, Users, UserCheck][index % 3];
+            return (
+              <Card
+                key={service._id}
+                className="group relative overflow-visible bg-gradient-to-br from-card to-card/50 border-border/50 hover-elevate"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
+                <CardHeader className="pb-4">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-teal-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                    <Icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold">{service.title}</h3>
+                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">{service.price}</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed">{service.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {service.features?.slice(0, 3).map((feature: string) => (
+                      <Badge key={feature} variant="secondary" className="text-xs">
+                        {feature}
+                      </Badge>
+                    ))}
+                  </div>
+                  <Link href="/services">
+                    <Button variant="ghost" className="gap-1 p-0 h-auto">
+                      Learn More <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-teal-500/10 rounded-2xl p-8 border border-border/50">
