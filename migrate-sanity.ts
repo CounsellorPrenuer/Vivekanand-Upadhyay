@@ -5,7 +5,7 @@ const client = createClient({
   dataset: "production",
   useCdn: false,
   apiVersion: "2024-03-10",
-  token: "skwwTHmFilJhGvyPMZmxm8qwTiybFuEOaodJpSXMWlGIytsvWdtP47J5wQCc56ionK9M4GDDNbZacnZrb1lUrCWHFATdquSUk9LUlALx9knbkm9MCqPPO0ON7gXTyqMsg87WdnbtjgJFvI4YyDGf07EMpuZZCMk7NH8pNk27GaR9UXMLDFxH",
+  token: "skv67jYYnd1SYMqdsDgf0j9ixTlG4b3KcybBSe0tqXM2QQbuOl3ufk13alY1dMc8lGPQ2eQQKY8IV7Nh6GOUJ64bufbAYNkS1DnvPiEFJU1VZJxa6uUcCpp35YJw0mk1OpcL9Zw8HxYl43RzWBRsVmxoVcIqCOIxQW4EWFMQuAGBuaYnEZed",
 });
 
 const heroData = {
