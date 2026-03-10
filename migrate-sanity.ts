@@ -16,20 +16,20 @@ const pricingData = [
     section: "standard",
     plans: [
       {
+        planId: "pkg-1",
         name: "Discover",
         price: 5500,
         description: "Standard career discovery program for young students",
         isPremium: false,
-        paymentButtonId: "pl_RwDuOx96VYrsyN",
-        features: ["Career Interest Assessment", "Aptitude Testing", "Basic Career Report", "1 Counselling Session (30 min)", "Email Support"],
+        features: ["Psychometric assessment", "1 career counselling session", "Lifetime Knowledge Gateway access", "Live webinar invites"],
       },
       {
+        planId: "pkg-2",
         name: "Discover Plus+",
         price: 15000,
         description: "Comprehensive career discovery with premium support",
         isPremium: true,
-        paymentButtonId: "pl_RwDq8XpK76OhB3",
-        features: ["Career Interest Assessment", "Aptitude Testing", "Detailed Career Report", "3 Counselling Sessions (60 min each)", "Priority Email & Call Support", "Detailed Personality Analysis", "Stream Selection Guidance", "Parent Consultation Session", "3 Follow-up Sessions", "Personalized Career Roadmap"],
+        features: ["Psychometric assessments", "8 career counselling sessions (1/year)", "Custom reports & study abroad guidance", "CV building"],
       },
     ],
   },
@@ -40,20 +40,20 @@ const pricingData = [
     section: "standard",
     plans: [
       {
+        planId: "pkg-3",
         name: "Achieve Online",
         price: 5999,
         description: "Standard program for senior secondary students",
         isPremium: false,
-        paymentButtonId: "pl_RwDxvLPQP7j4rG",
-        features: ["Psychometric Assessment", "Stream/Subject Selection", "Basic Career Report", "1 Counselling Session (45 min)", "Email Support"],
+        features: ["Psychometric assessment", "1 career counselling session", "Lifetime Knowledge Gateway access", "Pre-recorded webinars"],
       },
       {
+        planId: "pkg-4",
         name: "Achieve Plus+",
         price: 10599,
         description: "Premium guidance for career-focused students",
         isPremium: true,
-        paymentButtonId: "pl_RwDzfVkQYEdAIf",
-        features: ["Psychometric Assessment", "Stream/Subject Selection", "Comprehensive Career Report", "3 Counselling Sessions (60 min each)", "Priority Support (Call & Email)", "Entrance Exam Guidance", "Top College Selection Support", "Parent Consultation Session", "6 Follow-up Sessions", "Application Strategy Document"],
+        features: ["Psychometric assessment", "4 career counselling sessions", "Custom reports & study abroad guidance", "CV reviews"],
       },
     ],
   },
@@ -64,20 +64,20 @@ const pricingData = [
     section: "standard",
     plans: [
       {
+        planId: "pkg-5",
         name: "Ascend Online",
         price: 6499,
         description: "Career launch program for recent graduates",
         isPremium: false,
-        paymentButtonId: "pl_RwE1evNHrHWJDW",
-        features: ["Career Path Discovery", "Resume Building", "Interview Skills", "1 Counselling Session", "Job Search Strategy"],
+        features: ["Psychometric assessment", "1 career counselling session", "Lifetime Knowledge Gateway access", "Pre-recorded webinars"],
       },
       {
+        planId: "pkg-6",
         name: "Ascend Plus+",
         price: 10599,
         description: "Complete career placement guidance",
         isPremium: true,
-        paymentButtonId: "pl_RwE3WEILWB9WeJ",
-        features: ["Career Path Discovery", "Premium Resume Makeover", "Mock Interviews", "3 Counselling Sessions", "Priority Support", "Networking Strategy", "Portfolio Building", "Soft Skills Training", "Industry Connect", "Placement Assistance"],
+        features: ["Psychometric assessment", "3 career counselling sessions", "Certificate/online course info", "CV reviews for jobs"],
       },
     ],
   },
@@ -88,20 +88,20 @@ const pricingData = [
     section: "standard",
     plans: [
       {
+        planId: "mp-3",
         name: "Ascend Online",
         price: 6499,
         description: "Career growth program for professionals",
         isPremium: false,
-        paymentButtonId: "pl_RwE1evNHrHWJDW",
-        features: ["Skill Gap Analysis", "Career Transition Support", "Mid-career Mentoring", "1 Counselling Session", "Professional Branding"],
+        features: ["Psychometric assessment", "1 career counselling session", "Lifetime Knowledge Gateway access", "Pre-recorded webinars"],
       },
       {
+        planId: "mp-2",
         name: "Ascend Plus+",
         price: 10599,
         description: "Leadership and career advancement guidance",
         isPremium: true,
-        paymentButtonId: "pl_RwE3WEILWB9WeJ",
-        features: ["Leadership Coaching", "Executive Presence", "Advanced Strategy", "3 Counselling Sessions", "Priority Support", "Personal Branding", "Executive Resume", "LinkedIn Optimization", "Management Guidance", "Long-term Planning"],
+        features: ["Psychometric assessment", "3 career counselling sessions", "Certificate/online course info", "CV reviews for jobs"],
       },
     ],
   },
@@ -112,6 +112,7 @@ const pricingData = [
     section: "custom",
     plans: [
       {
+        planId: "career-report",
         name: "Career Report",
         price: 1500,
         description: "Get a detailed report of your psychometric assessment for a scientific analysis of your interests.",
@@ -119,48 +120,73 @@ const pricingData = [
         features: ["Psychometric assessment report", "Scientific interest analysis", "Future path suggestions"],
       },
       {
-        name: "Career Report + Counselling",
+        planId: "career-report-counselling",
+        name: "Career Report + Career Counselling",
         price: 3000,
         description: "Connect with India's top career coaches to analyse your report and shortlist top paths.",
         isPremium: true,
         features: ["Psychometric report", "1-on-1 coach session", "Shortlist top 3 paths"],
       },
       {
-        name: "Knowledge Gateway",
+        planId: "knowledge-gateway",
+        name: "Knowledge Gateway + Career Helpline Access",
         price: 100,
-        description: "Unlock holistic information on your career path through our knowledge portal.",
+        description: "Unlock holistic information on your career path and get direct access to experts.",
         isPremium: false,
-        features: ["Portal access", "Career helpline access"],
+        features: ["Portal access", "Career helpline access", "Direct expert consultation"],
       },
       {
-        name: "Course & College Selection",
-        price: 2500,
-        description: "Select the most appropriate course and college that is appropriate for your interests.",
+        planId: "one-to-one-session",
+        name: "One-to-One Session with a Career Expert",
+        price: 3500,
+        description: "Resolve your career queries through a one-on-one session with an expert from your chosen field.",
         isPremium: false,
-        features: ["College list", "Course alignment"],
+        features: ["1 session with expert", "Industry insights"],
       },
       {
-        name: "Skill Set Development",
+        planId: "college-admission-planning",
+        name: "College Admission Planning",
         price: 3000,
-        description: "Identify & resolve skill gaps through a personalised skill set development program.",
+        description: "Get unbiased recommendations and details on your future college options in India and abroad.",
         isPremium: false,
-        features: ["Gap analysis", "Learning roadmap"],
+        features: ["College list", "Course alignment", "Resourceful planner"],
       },
       {
-        name: "Alumni Interaction",
-        price: 500,
-        description: "Connect with alumni from your dream companies and colleges.",
+        planId: "exam-stress-management",
+        name: "Exam Stress Management",
+        price: 1000,
+        description: "Get expert guidance on tackling exam stress from India's top educators.",
         isPremium: false,
-        features: ["1 session with alumni", "Industry insights"],
+        features: ["Stress management tips", "Study schedule planning", "Revision tips"],
       },
       {
-        name: "Resume & Portfolio Building",
-        price: 3000,
-        description: "Get a professional resume and portfolio built by India's top mentors.",
+        planId: "cap-100",
+        name: "College Admissions Planner - 100 (CAP-100)",
+        price: 199,
+        description: "Ranked list of the top 100 colleges in your course based on verified cut-offs.",
         isPremium: false,
-        features: ["Professional resume", "Portfolio setup"],
+        features: ["Top 100 colleges", "Four tiers (Ivy, Target, Backup, Safe)", "Expert-curated list"],
       },
     ],
+  },
+];
+
+const coupons = [
+  {
+    _type: "coupon",
+    _id: "coupon-welcome10",
+    code: "WELCOME10",
+    discountType: "percentage",
+    value: 10,
+    isActive: true,
+  },
+  {
+    _type: "coupon",
+    _id: "coupon-flat500",
+    code: "FLAT500",
+    discountType: "flat",
+    value: 500,
+    isActive: true,
   },
 ];
 
@@ -194,17 +220,37 @@ const services = [
 const blogPosts = [
   {
     _type: "blogPost",
+    _id: "blog-1",
     title: "10 Tips for Choosing the Right Career Path",
     excerpt: "Discover practical strategies to identify your ideal career based on your strengths, interests, and market opportunities.",
     category: "Career Tips",
     date: "2024-12-10",
     readTime: "5 min read",
   },
+  {
+    _type: "blogPost",
+    _id: "blog-2",
+    title: "The Future of AI in Career Counselling",
+    excerpt: "How artificial intelligence is personalizing career paths and providing data-driven insights for students and professionals.",
+    category: "Technology",
+    date: "2024-12-15",
+    readTime: "7 min read",
+  },
+  {
+    _type: "blogPost",
+    _id: "blog-3",
+    title: "Overcoming Exam Stress: A Guide for Students",
+    excerpt: "Practical mindfulness and planning techniques to stay calm and perform your best during competitive exams.",
+    category: "Student Life",
+    date: "2024-12-20",
+    readTime: "6 min read",
+  },
 ];
 
 async function migrate() {
   console.log("Starting migration...");
   
+  // Migrate Pricing
   for (const item of pricingData) {
     const doc = {
       ...item,
@@ -213,19 +259,26 @@ async function migrate() {
     await client.createOrReplace(doc);
     console.log(`Created/Updated pricing category: ${item.label}`);
   }
+
+  // Migrate Coupons
+  for (const item of coupons) {
+    await client.createOrReplace(item);
+    console.log(`Created/Updated coupon: ${item.code}`);
+  }
   
-  for (const item of testimonials) {
-    await client.create(item);
+  // Migrate Otros (using createOrReplace with generated IDs or stable ones)
+  for (const [index, item] of testimonials.entries()) {
+    await client.createOrReplace({ ...item, _id: `testimonial-${index}` });
     console.log(`Created testimonial: ${item.name}`);
   }
   
-  for (const item of services) {
-    await client.create(item);
+  for (const [index, item] of services.entries()) {
+    await client.createOrReplace({ ...item, _id: `service-${index}` });
     console.log(`Created service: ${item.title}`);
   }
   
   for (const item of blogPosts) {
-    await client.create(item);
+    await client.createOrReplace(item);
     console.log(`Created blog post: ${item.title}`);
   }
   

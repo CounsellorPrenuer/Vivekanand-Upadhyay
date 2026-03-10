@@ -7,7 +7,8 @@ export const pricingPlan = {
     { name: 'price', title: 'Price', type: 'number' },
     { name: 'description', title: 'Description', type: 'text' },
     { name: 'isPremium', title: 'Is Premium', type: 'boolean' },
-    { name: 'paymentButtonId', title: 'Payment Button ID', type: 'string' },
+    { name: 'paymentButtonId', title: 'Payment Button ID (Legacy)', type: 'string', description: 'Used for old static buttons' },
+    { name: 'planId', title: 'Plan ID', type: 'string', description: 'Unique identifier for the plan' },
     {
       name: 'features',
       title: 'Features',
@@ -35,6 +36,7 @@ export const pricingCategory = {
         ],
       },
     },
+    { name: 'image', title: 'Header Image', type: 'image', hidden: ({document}) => document?.section !== 'custom' },
     {
       name: 'plans',
       title: 'Plans',
@@ -89,4 +91,27 @@ export const blogPost = {
   ],
 }
 
-export const schemaTypes = [pricingCategory, pricingPlan, testimonial, service, blogPost]
+export const coupon = {
+  name: 'coupon',
+  title: 'Coupon',
+  type: 'document',
+  fields: [
+    { name: 'code', title: 'Coupon Code', type: 'string' },
+    {
+      name: 'discountType',
+      title: 'Discount Type',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Percentage', value: 'percentage' },
+          { title: 'Flat Amount', value: 'flat' },
+        ],
+      },
+    },
+    { name: 'value', title: 'Discount Value', type: 'number' },
+    { name: 'isActive', title: 'Is Active', type: 'boolean', initialValue: true },
+    { name: 'expiryDate', title: 'Expiry Date', type: 'date' },
+  ],
+}
+
+export const schemaTypes = [pricingCategory, pricingPlan, testimonial, service, blogPost, coupon]

@@ -48,29 +48,27 @@ export default function ContactForm() {
     },
   });
 
-  const onSubmit = (data: ContactFormData) => {
-    const subject = encodeURIComponent(`Inquiry from ${data.name} regarding ${data.service}`);
-    const body = encodeURIComponent(
-      `Name: ${data.name}\n` +
-      `Email: ${data.email}\n` +
-      `Phone: ${data.phone}\n` +
-      `Service: ${data.service}\n\n` +
-      `Message:\n${data.message}`
-    );
-    
-    const mailtoUrl = `mailto:vivekupadhyay2005@gmail.com?subject=${subject}&body=${body}`;
-    
-    // Save to database
-    apiRequest("POST", "/api/contact", data).catch((err: any) => console.error("Failed to save to DB:", err));
+  const onSubmit = async (data: ContactFormData) => {
+    try {
+      await apiRequest("POST", "/api/contact", data);
+    } catch (error: any) {
+      console.error("Error saving lead:", error);
+    } finally {
+      // Robust redirection for Safari and Mobile browsers
+      const mailtoUrl = `mailto:sindhuvarma@mentoria.com?subject=Mentoria Inquiry from ${data.name}&body=Name: ${data.name}%0D%0AEmail: ${data.email}%0D%0APhone: ${data.phone}%0D%0AMessage: ${data.message}`;
+      
+      // Attempt to open mail client immediately
+      window.location.href = mailtoUrl;
 
-    // Redirect to mailto link
-    window.location.href = mailtoUrl;
-    
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
+      // Assuming toast is not defined, removing the toast call to maintain syntactical correctness.
+      // If toast is intended, it needs to be imported/defined.
+
       form.reset();
-    }, 3000);
+      setIsSubmitted(true);
+      setTimeout(() => {
+        setIsSubmitted(false);
+      }, 3000);
+    }
   };
 
   if (isSubmitted) {
