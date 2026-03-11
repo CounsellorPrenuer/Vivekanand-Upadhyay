@@ -131,10 +131,11 @@ export default function CheckoutModal({ isOpen, onClose, plan }: CheckoutModalPr
       const rzp = new (window as any).Razorpay(options);
       rzp.open();
     } catch (error: any) {
+      console.error("Checkout detail error:", error);
       toast({
         variant: "destructive",
         title: "Checkout Error",
-        description: "Failed to initiate payment. Please try again.",
+        description: error.message || "Failed to initiate payment. Please try again.",
       });
     } finally {
       setIsProcessing(false);
