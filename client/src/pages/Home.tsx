@@ -15,10 +15,14 @@ export default function Home() {
 
   useEffect(() => {
     if (location === "/pricing") {
-      const element = document.getElementById("pricing");
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+      // Small timeout to ensure the component is rendered and ID is available
+      const timer = setTimeout(() => {
+        const element = document.getElementById("pricing");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [location]);
 

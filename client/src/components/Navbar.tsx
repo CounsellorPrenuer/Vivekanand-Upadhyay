@@ -6,11 +6,11 @@ import ThemeToggle from "./ThemeToggle";
 import logoImage from "@assets/11_-_Vivekanand_Upadhyay_1765615274650.jpg";
 
 const navItems = [
-  { label: "Home", href: "#/" },
-  { label: "Services", href: "#/services" },
-  { label: "Pricing", href: "#/pricing" },
-  { label: "Blog", href: "#/blog" },
-  { label: "Contact", href: "#/contact" },
+  { label: "Home", href: "/" },
+  { label: "Services", href: "/services" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
