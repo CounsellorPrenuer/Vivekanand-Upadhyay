@@ -1,0 +1,11 @@
+{
+  "name": "vivekanand-upadhyay-api",
+  "version": "1.0.0",
+  "type": "module",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "razorpay": "^2.9.6"
+  }
+}

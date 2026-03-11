@@ -1,0 +1,10 @@
+export default {
+	async fetch(request: Request, env: any, ctx: any): Promise<Response> {
+		return new Response(JSON.stringify({ success: true, message: 'Worker is live' }), {
+			headers: { 
+				'Access-Control-Allow-Origin': '*',
+				'Content-Type': 'application/json' 
+			},
+		});
+	},
+};
