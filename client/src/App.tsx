@@ -27,50 +27,28 @@ function ScrollToTop() {
   return null;
 }
 
-function RouterComponent() {
-  return (
-    <Router hook={useHashLocation}>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/services" component={Services} />
-        <Route path="/pricing" component={Home} />
-        <Route path="/blog" component={Blog} />
-        <Route path="/contact" component={Contact} />
-        <Route path="/admin" component={Admin} />
-        <Route component={NotFound} />
-      </Switch>
-    </Router>
-  );
-}
-
-function Layout({ children }: { children: React.ReactNode }) {
-  const [location] = useLocation();
-  const isAdminPage = location === "/admin";
-  
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <ScrollToTop />
-      <CustomCursor />
-      {!isAdminPage && <Navbar />}
-      {children}
-      {!isAdminPage && <Footer />}
-      {!isAdminPage && <FloatingWhatsApp />}
-    </div>
-  );
-}
-
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <TooltipProvider>
-          <Layout>
-            <RouterComponent />
-          </Layout>
-          <Toaster />
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <Router hook={useHashLocation}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Layout>
+              <Switch>
+                <Route path="/" component={Home} />
+                <Route path="/services" component={Services} />
+                <Route path="/pricing" component={Home} />
+                <Route path="/blog" component={Blog} />
+                <Route path="/contact" component={Contact} />
+                <Route path="/admin" component={Admin} />
+                <Route component={NotFound} />
+              </Switch>
+            </Layout>
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </Router>
   );
 }
 
