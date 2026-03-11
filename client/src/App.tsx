@@ -27,6 +27,22 @@ function ScrollToTop() {
   return null;
 }
 
+function Layout({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
+  const isAdminPage = location === "/admin";
+  
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <ScrollToTop />
+      <CustomCursor />
+      {!isAdminPage && <Navbar />}
+      {children}
+      {!isAdminPage && <Footer />}
+      {!isAdminPage && <FloatingWhatsApp />}
+    </div>
+  );
+}
+
 function App() {
   return (
     <Router hook={useHashLocation}>
