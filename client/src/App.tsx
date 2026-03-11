@@ -13,6 +13,7 @@ import CustomCursor from "@/components/CustomCursor";
 import Home from "@/pages/Home";
 import Services from "@/pages/Services";
 import Blog from "@/pages/Blog";
+import BlogDetail from "@/pages/BlogDetail";
 import Contact from "@/pages/Contact";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
@@ -55,6 +56,7 @@ function App() {
                 <Route path="/services" component={Services} />
                 <Route path="/pricing" component={Home} />
                 <Route path="/blog" component={Blog} />
+                <Route path="/blog/:id" component={BlogDetail} />
                 <Route path="/contact" component={Contact} />
                 <Route path="/admin" component={Admin} />
                 <Route component={NotFound} />

@@ -24,6 +24,7 @@ export const pricingCategory = {
   type: 'document',
   fields: [
     { name: 'id', title: 'ID', type: 'string' },
+    { name: 'order', title: 'Order', type: 'number' },
     { name: 'label', title: 'Label', type: 'string' },
     {
       name: 'section',

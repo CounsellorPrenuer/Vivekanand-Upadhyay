@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 import { client, urlFor } from "@/lib/sanity";
 
 const categories = ["All", "Career Tips", "Student Guidance", "Industry Insights", "Success Stories"];
@@ -165,15 +166,16 @@ export default function Blog() {
                           {post.readTime}
                         </span>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="gap-1 p-0 h-auto"
-                        onClick={() => handleReadArticle(post._id)}
-                        data-testid={`button-read-${post._id}`}
-                      >
-                        Read <ArrowRight className="w-3 h-3" />
-                      </Button>
+                      <Link href={`/blog/${post._id}`}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-1 p-0 h-auto"
+                          data-testid={`button-read-${post._id}`}
+                        >
+                          Read <ArrowRight className="w-3 h-3" />
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>

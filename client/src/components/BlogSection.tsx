@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -82,9 +83,11 @@ export default function BlogSection() {
                 </CardHeader>
                 <CardContent className="p-6 flex-grow flex flex-col">
                   <p className="text-sm text-muted-foreground line-clamp-3 mb-6 flex-grow">{post.excerpt}</p>
-                  <Button variant="ghost" className="p-0 h-auto text-primary font-bold gap-2 hover:bg-transparent hover:text-primary/80 group/btn">
-                    Read More <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                  </Button>
+                  <Link href={`/blog/${post._id}`}>
+                    <Button variant="ghost" className="p-0 h-auto text-primary font-bold gap-2 hover:bg-transparent hover:text-primary/80 group/btn">
+                      Read More <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </motion.div>

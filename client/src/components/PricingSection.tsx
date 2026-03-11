@@ -82,12 +82,8 @@ function PricingCard({ plan, categoryId, onSelectPlan }: PricingCardProps) {
         </CardContent>
         <CardFooter className="pt-0">
           <Button
-            className={`w-full py-6 text-lg font-bold transition-all duration-300 ${
-              plan.isPremium
-                ? "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg"
-                : "bg-white/5 hover:bg-white/10 border-white/20"
-            }`}
-            variant={plan.isPremium ? "default" : "outline"}
+            className="w-full py-6 text-lg font-bold transition-all duration-300 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md hover:shadow-lg"
+            variant="default"
             onClick={() => onSelectPlan(plan)}
           >
             Buy Now
@@ -107,7 +103,7 @@ export default function PricingSection() {
   useEffect(() => {
     const fetchPricing = async () => {
       try {
-        const data = await client.fetch(`*[_type == "pricingCategory"] | order(id asc)`);
+        const data = await client.fetch(`*[_type == "pricingCategory"] | order(order asc)`);
         setPricingData(data);
         const firstStandard = data.find((c: any) => c.section === 'standard');
         if (firstStandard) {

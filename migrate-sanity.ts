@@ -81,7 +81,8 @@ const pricingData = [
   {
     _type: "pricingCategory",
     id: "8-9",
-    label: "8-9 Students",
+    order: 1,
+    label: "8-10 Students",
     section: "standard",
     plans: [
       { planId: "pkg-1", name: "Discover", price: 5500, description: "Standard career discovery program for young students", isPremium: false, features: ["Psychometric assessment", "1 career counselling session", "Lifetime Knowledge Gateway access", "Live webinar invites"] },
@@ -91,6 +92,7 @@ const pricingData = [
   {
     _type: "pricingCategory",
     id: "10-12",
+    order: 2,
     label: "10-12 Students",
     section: "standard",
     plans: [
@@ -101,7 +103,8 @@ const pricingData = [
   {
     _type: "pricingCategory",
     id: "graduates",
-    label: "Graduates",
+    order: 3,
+    label: "College Students",
     section: "standard",
     plans: [
       { planId: "pkg-5", name: "Ascend Online", price: 6499, description: "Career launch program for recent graduates", isPremium: false, features: ["Psychometric assessment", "1 career counselling session", "Lifetime Knowledge Gateway access", "Pre-recorded webinars"] },
@@ -111,6 +114,7 @@ const pricingData = [
   {
     _type: "pricingCategory",
     id: "professionals",
+    order: 4,
     label: "Working Professionals",
     section: "standard",
     plans: [
@@ -121,6 +125,7 @@ const pricingData = [
   {
     _type: "pricingCategory",
     id: "custom",
+    order: 5,
     label: "Custom Mentorship Plans",
     section: "custom",
     plans: [
