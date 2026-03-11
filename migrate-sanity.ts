@@ -159,9 +159,75 @@ const services = [
 ];
 
 const blogPosts = [
-  { _type: "blogPost", _id: "blog-1", title: "10 Tips for Choosing the Right Career Path", excerpt: "Discover practical strategies to identify your ideal career based on your strengths, interests, and market opportunities.", category: "Career Tips", date: "2024-12-10", readTime: "5 min read" },
-  { _type: "blogPost", _id: "blog-2", title: "The Future of AI in Career Counselling", excerpt: "How artificial intelligence is personalizing career paths and providing data-driven insights for students and professionals.", category: "Technology", date: "2024-12-15", readTime: "7 min read" },
-  { _type: "blogPost", _id: "blog-3", title: "Overcoming Exam Stress: A Guide for Students", excerpt: "Practical mindfulness and planning techniques to stay calm and perform your best during competitive exams.", category: "Student Life", date: "2024-12-20", readTime: "6 min read" },
+  { 
+    _type: "blogPost", 
+    _id: "blog-1", 
+    title: "10 Tips for Choosing the Right Career Path", 
+    excerpt: "Discover practical strategies to identify your ideal career based on your strengths, interests, and market opportunities.", 
+    content: `Choosing the right career path is one of the most significant decisions you'll ever make. It's not just about what you do for 8 hours a day; it's about finding alignment between your skills, passions, and the value you want to bring to the world.
+
+Here are 10 practical tips to guide your journey:
+
+1. Understand Your Strengths: What comes naturally to you? Use psychometric assessments to get an objective view of your aptitudes.
+2. Identify Your Passions: What activities make you lose track of time? Your career should ideally involve elements of things you love.
+3. Research Market Trends: Passion is important, but sustainability matters. Look for industries that are growing and offer future stability.
+4. Seek Mentorship: Talk to people already in the fields you're considering. Their real-world insights are invaluable.
+5. Consider Your Lifestyle Preferences: Do you want a remote job, a high-travel role, or a structured office environment?
+6. Evaluate Financial Goals: Be realistic about the earning potential in different paths and how they align with your aspirations.
+7. Experiment with Internships: There's no better way to learn than by doing. Try short-term projects or internships to test the waters.
+8. Balance Passion with Practicality: Sometimes a hobby is best left as a hobby. Ensure your career choice can support you.
+9. Stay Open to Evolution: Your first career might not be your last. Be prepared to upskill and pivot as you grow.
+10. Prioritize Mental Well-being: Choose a path that challenges you without leading to constant burnout.
+
+Remember, career discovery is a journey, not a destination. Take the time to explore, and don't be afraid to ask for professional help along the way.`,
+    category: "Career Tips", 
+    date: "2024-12-10", 
+    readTime: "5 min read" 
+  },
+  { 
+    _type: "blogPost", 
+    _id: "blog-2", 
+    title: "The Future of AI in Career Counselling", 
+    excerpt: "How artificial intelligence is personalizing career paths and providing data-driven insights for students and professionals.", 
+    content: `Artificial Intelligence is no longer just a buzzword; it's a transformative force in the world of career guidance. For years, career counselling relied heavily on the intuition and experience of individual counsellors. While that remains vital, AI is adding a layer of data-driven precision that was previously impossible.
+
+How AI is Changing the Game:
+
+1. Personalized Assessments: Modern psychometric tests use AI to adapt to the user's responses in real-time, providing far more accurate psychological profiles.
+2. Vast Data Analysis: AI can analyze millions of job postings, salary trends, and skill requirements across the globe to provide real-time market insights.
+3. Predictive Pathing: By analyzing successful career trajectories, AI can suggest "hidden" paths that perfectly match a student's profile but might not have been obvious.
+4. Scalability: AI-powered tools allow expert guidance to reach students in remote areas where professional counsellors might not be available.
+5. Continuous Learning: AI systems can track a professional's growth and suggest the exact certifications or skills needed for their next promotion.
+
+The Human Connection:
+Despite these advances, AI cannot replace the empathy, emotional intelligence, and nuanced understanding of a human counsellor. The future lies in 'Augmented Counselling'—where experts use AI as a powerful tool to provide deeper, more personalized, and more effective guidance than ever before.`,
+    category: "Technology", 
+    date: "2024-12-15", 
+    readTime: "7 min read" 
+  },
+  { 
+    _type: "blogPost", 
+    _id: "blog-3", 
+    title: "Overcoming Exam Stress: A Guide for Students", 
+    excerpt: "Practical mindfulness and planning techniques to stay calm and perform your best during competitive exams.", 
+    content: `Exam season is often synonymous with high stress and anxiety. However, stress doesn't have to be a barrier to your success. In fact, a small amount of "positive stress" can keep you focused. The key is to prevent it from becoming overwhelming.
+
+Effective Strategies for Managing Exam Stress:
+
+1. Create a Realistic Schedule: Don't try to cram 24 hours of study into one day. Break your subjects into small, manageable chunks with frequent breaks.
+2. Prioritize Sleep: Your brain needs rest to consolidate information. Aim for 7-8 hours of sleep, especially during the week before exams.
+3. Practice Mindfulness: Even 10 minutes of deep breathing or meditation can significantly lower cortisol levels and improve concentration.
+4. Physical Activity: A short walk or a light workout releases endorphins, which are natural stress busters.
+5. Healthy Eating: Avoid excessive caffeine and sugar. Opt for "brain foods" like nuts, fruits, and complex carbohydrates.
+6. The Power of "No": It's okay to skip social events when you need to focus. Your friends will understand.
+7. Visualization: Spend a few moments each day visualizing yourself sitting in the exam hall, calm and confident, answering questions.
+
+Mental Health Matters:
+If you find your stress becoming unmanageable, don't hesitate to talk to a counsellor, teacher, or parent. Asking for help is a sign of strength, not weakness. You are more than your grades, and your well-being should always come first.`,
+    category: "Student Life", 
+    date: "2024-12-20", 
+    readTime: "6 min read" 
+  },
 ];
 
 const faqData = [
